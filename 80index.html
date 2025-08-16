@@ -9,9 +9,9 @@
     --cream:#F8F4E6;
     --ink:#1f2937;
     --muted:#6b7280;
-    --brand:#f97316;      /* オレンジ */
-    --ok:#16a34a;         /* 正解 */
-    --ng:#dc2626;         /* 不正解 */
+    --brand:#f97316;
+    --ok:#16a34a;
+    --ng:#dc2626;
     --card:#ffffffcc;
     --radius:18px;
   }
@@ -34,9 +34,7 @@
     display:inline-flex; align-items:center; gap:8px; padding:8px 12px;
     border-radius:999px; background:#fff; border:1px solid #e5e7eb; color:#374151;
   }
-  select, button, input[type="file"]{
-    font:inherit; border-radius:999px; border:1px solid #e5e7eb; padding:8px 12px; background:#fff;
-  }
+  select, button{font:inherit; border-radius:999px; border:1px solid #e5e7eb; padding:8px 12px; background:#fff;}
   button{cursor:pointer}
   button.primary{background:var(--brand); color:#fff; border-color:#fb923c}
   button.ghost{background:transparent}
@@ -49,9 +47,9 @@
   }
   .questionHeader{display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px}
   .levelTag{font-weight:700; color:#9a3412}
-  .jp{color:var(--muted); margin-top:6px}
+  .stem, .jp{font-size:clamp(18px, 3.4vw, 26px);}
+  .jp{margin-top:6px}
   .stem{
-    font-size:clamp(18px, 3.4vw, 26px);
     padding:14px 0; border-top:1px dashed #e5e7eb; border-bottom:1px dashed #e5e7eb;
   }
   .blank{display:inline-block; min-width:6ch; border-bottom:2px solid #111827; text-align:center; padding:0 4px}
@@ -110,11 +108,6 @@
           <option value="wrongs">復習（まちがえた問題のみ）</option>
         </select>
       </span>
-      <span class="pill" id="filePill">
-        例文JSON:
-        <input id="file" type="file" accept=".json" />
-        <button class="primary" id="loadBtn" title="JSONを読み込み">読み込み</button>
-      </span>
       <button class="ghost" id="resetBtn" title="保存データを初期化">進捗リセット</button>
     </div>
   </header>
@@ -155,87 +148,42 @@
       <details>
         <summary>使い方（かんたん）</summary>
         <ul>
-          <li>上の<span class="pill">例文JSON</span>から、<strong>eighty_patterns_001-400.json</strong>を読み込み。</li>
-          <li>レベル・出題順・出題対象を選び、問題に答えます。</li>
-          <li>間違えたら「復習に追加」でリスト化。<strong>出題対象：復習</strong>に切り替えると苦手だけ出題。</li>
-          <li>スコアや復習リストは<strong>自動保存</strong>（ブラウザのローカル）。「進捗リセット」で初期化。</li>
+          <li>このファイルはデータを<strong>内蔵</strong>しています。すぐに学習できます。</li>
+          <li>レベル・出題順・出題対象を選び、4択に答えます。</li>
+          <li>「復習に追加」で苦手だけ出題可能。「進捗リセット」でローカル保存を初期化。</li>
         </ul>
       </details>
     </section>
-    <div class="footerNote">© 学習用。UIはPC/タブレット/スマホで見やすく調整済み。</div>
+    <div class="footerNote">© 学習用。UIはPC/タブレット/スマホ対応。</div>
   </main>
 
+<script id="EMBEDDED_DATA" type="application/json">[{"id":1,"jp":"買わないと→本棚","template":"I need to buy a (bookshelf).","options":["privately","offensive","bookshelf","reading"],"answer":"bookshelf"},{"id":2,"jp":"ならないで→そんなに感情的に","template":"Don't be so (emotional).","options":["emotional","hangover","feelings","charger"],"answer":"emotional"},{"id":3,"jp":"どんな種類→食べ物→一番好き","template":"What kind of food do you like the (most)?","options":["most","show","jobs","strong"],"answer":"most"},{"id":4,"jp":"しない→もう一度それを","template":"I (will) not do it again.","options":["new","will","best","bruno"],"answer":"will"},{"id":5,"jp":"言いたい→ごめんなさい","template":"I'd like to say I'm (sorry).","options":["sorry","heading","home","can't"],"answer":"sorry"},{"id":6,"jp":"上達させたい→スペイン語","template":"I'd like to brush up my (Spanish).","options":["Spanish","kyoto","crazy","toast"],"answer":"Spanish"},{"id":7,"jp":"頼まないと→助言","template":"I need to ask for (advice).","options":["list","early","cheering","advice"],"answer":"advice"},{"id":8,"jp":"どうやって作る→新しいアカウント","template":"How can I make a new (account)?","options":["account","crazy","baseball","going"],"answer":"account"},{"id":9,"jp":"準備できてる→寝る","template":"Are you ready to go to (bed)?","options":["file","love","bed","suit"],"answer":"bed"},{"id":10,"jp":"ありがとう→情報→共有してくれて","template":"Thank you for sharing the (information) with me.","options":["information","privately","understand","optimistic"],"answer":"information"},{"id":11,"jp":"絶対にしない→諦める","template":"I will never (give) up.","options":["give","steps","better","done"],"answer":"give"},{"id":12,"jp":"ありますか→郵便局→近くに","template":"Is there a post office (near) here?","options":["near","people","along","light"],"answer":"near"},{"id":13,"jp":"忘れない→あの時","template":"I will not forget that (time).","options":["french","don't","time","dare"],"answer":"time"},{"id":14,"jp":"ありますか→英語の授業→明日","template":"Is there English class (tomorrow)?","options":["tomorrow","videos","criticized","hungry"],"answer":"tomorrow"},{"id":15,"jp":"ごめん→起こした→あなたを","template":"Sorry, did I (wake) you?","options":["sleepy","wake","math","catch"],"answer":"wake"},{"id":16,"jp":"どこで登録できる?","template":"Where can I (sign) up?","options":["pencil","sign","dare","think"],"answer":"sign"},{"id":17,"jp":"行ってもいい→あなたの家→今夜","template":"Hey Mary, can I go over to your place (tonight)?","options":["button","thinking","haircut","tonight"],"answer":"tonight"},{"id":18,"jp":"参加しない","template":"I will not (participate).","options":["earthquake","participate","overboard","colleague"],"answer":"participate"},{"id":19,"jp":"傷つけた→あなたを","template":"Did I (hurt) you?","options":["hurt","jobs","time","little"],"answer":"hurt"},{"id":20,"jp":"この本→眠くさせる→私を","template":"This book makes me (sleepy).","options":["stingy","help","sleepy","said"],"answer":"sleepy"},{"id":21,"jp":"やめよう→こだわること→過去の間違いに","template":"Let's not dwell on past (mistakes).","options":["mistakes","confused","friend","english"],"answer":"mistakes"},{"id":22,"jp":"知らない→何をすればいいか","template":"I don't (know) what to do.","options":["books","know","night","week"],"answer":"know"},{"id":23,"jp":"やりすぎた?","template":"Did I go too (far)?","options":["bad","hard","done","far"],"answer":"far"},{"id":24,"jp":"どうやってアンインストールする→これらのアプリ","template":"How can I uninstall these (applications)?","options":["applications","information","misunderstood","conversation"],"answer":"applications"},{"id":25,"jp":"聞かせて→意見→この件について","template":"Let me hear your opinion on this (matter).","options":["order","concern","matter","light"],"answer":"matter"},{"id":26,"jp":"どこで見つけられる→土産物屋","template":"Where can I find a souvenir (shop)?","options":["walk","things","doctor","shop"],"answer":"shop"},{"id":27,"jp":"この歌→私を幸せにする","template":"This song makes me (happy).","options":["cafe","idea","strong","happy"],"answer":"happy"},{"id":28,"jp":"伝えないと→あなたに→何か","template":"I need to tell you (something).","options":["message","question","something","documents"],"answer":"something"},{"id":29,"jp":"紹介させて→コウタロウ→同僚","template":"Let me introduce Kotaro, my (colleague).","options":["privately","morning","apologize","colleague"],"answer":"colleague"},{"id":30,"jp":"どうだった→映画","template":"How was the (movie)?","options":["real","advice","movie","parents"],"answer":"movie"},{"id":31,"jp":"準備できてる→試験","template":"Are you ready for the (exam)?","options":["back","exam","book","hurt"],"answer":"exam"},{"id":32,"jp":"ありがとう→心配","template":"Thank you for your (concern).","options":["early","anything","overboard","concern"],"answer":"concern"},{"id":33,"jp":"どうだった→テスト","template":"How was the (test)?","options":["second","strong","test","friend"],"answer":"test"},{"id":34,"jp":"外食するつもり","template":"I'm going to (eat) out.","options":["sure","rude","far","eat"],"answer":"eat"},{"id":35,"jp":"ご不便をおかけしてすみません","template":"I'm sorry for the (inconvenience).","options":["applications","misunderstood","complaining","inconvenience"],"answer":"inconvenience"},{"id":36,"jp":"けちけちしないで","template":"Don't be (stingy).","options":["stingy","light","heading","mean"],"answer":"stingy"},{"id":37,"jp":"二度と泣かない","template":"I will never (cry) again.","options":["job","golf","help","cry"],"answer":"cry"},{"id":38,"jp":"更新しないと→パスポート→来年","template":"I need to renew my passport next (year).","options":["year","sit","nine","more"],"answer":"year"},{"id":39,"jp":"どこで受け取れる→その書類","template":"Where can I receive those (documents)?","options":["vegetarian","situation","mistakes","documents"],"answer":"documents"},{"id":40,"jp":"悲しまないで","template":"Don't be (sad).","options":["party","fish","sad","easy"],"answer":"sad"},{"id":41,"jp":"買うつもり→新しい自転車","template":"I'm going to buy a new (bike).","options":["mean","bike","words","ticket"],"answer":"bike"},{"id":42,"jp":"準備できてる→面接","template":"Are you ready for the (interview)?","options":["privately","memories","explode","interview"],"answer":"interview"},{"id":43,"jp":"どこで充電できる→私の電話","template":"Where can I charge my (phone)?","options":["cream","phone","eat","idea"],"answer":"phone"},{"id":44,"jp":"ありがとう→たくさんの思い出","template":"Thank you for many (memories).","options":["french","second","apologize","memories"],"answer":"memories"},{"id":45,"jp":"教えて→来るなら→パーティーに","template":"Let me know if you are coming to the (party).","options":["party","steps","speech","english"],"answer":"party"},{"id":46,"jp":"いつ食べられる→昼食","template":"When can I have (lunch)?","options":["list","late","lunch","said"],"answer":"lunch"},{"id":47,"jp":"焼くつもり→カップケーキ","template":"I'm going to bake (cupcakes).","options":["haircut","cupcakes","refund","almost"],"answer":"cupcakes"},{"id":48,"jp":"いつ訪問できる→あなたの家","template":"When can I visit your (house)?","options":["house","harder","new","spanish"],"answer":"house"},{"id":49,"jp":"急いで始めないでおこう","template":"Let's not rush into (things).","options":["alarm","going","best","things"],"answer":"things"},{"id":50,"jp":"いつ会える→あなたに→また","template":"When can I (see) you again?","options":["time","ask","see","broke"],"answer":"see"},{"id":51,"jp":"すみません→わがままで","template":"I'm sorry for being (selfish).","options":["anxious","privately","selfish","confused"],"answer":"selfish"},{"id":52,"jp":"どんな人たち→彼らは","template":"What kind of (people) are they?","options":["people","dollars","english","charger"],"answer":"people"},{"id":53,"jp":"すみません→悲しませて→あなたを","template":"I'm sorry for making you (sad).","options":["job","words","sad","tired"],"answer":"sad"},{"id":54,"jp":"どこに捨てられる→このペットボトル","template":"Where can I throw away this plastic (bottle)?","options":["bottle","tell","seek","stock"],"answer":"bottle"},{"id":55,"jp":"乾杯の音頭をとりたい","template":"I'd like to propose a (toast).","options":["slice","shop","phone","toast"],"answer":"toast"},{"id":56,"jp":"同じもの→もらえますか","template":"Can I have the same (thing)?","options":["easy","thing","cream","rush"],"answer":"thing"},{"id":57,"jp":"ありがとう→助けてくれて","template":"Thank you for (helping) me.","options":["things","helping","friend","videos"],"answer":"helping"},{"id":58,"jp":"彼女→私を怒らせた","template":"She made me (mad).","options":["mad","taxi","sleep","early"],"answer":"mad"},{"id":59,"jp":"どんな仕事→している→あなたは","template":"What kind of (work) do you do?","options":["work","show","trip","fail"],"answer":"work"},{"id":60,"jp":"どう返す→これ→払い戻しを受けるため","template":"How can I return this and get a (refund)?","options":["sign","abroad","some","refund"],"answer":"refund"},{"id":61,"jp":"会いに行くつもり→祖父母","template":"I'm going to see my (grandparents).","options":["optimistic","grandparents","everything","vegetarian"],"answer":"grandparents"},{"id":62,"jp":"心配しないで→面接について","template":"Don't be worried about the (interview).","options":["interview","anything","spanish","information"],"answer":"interview"},{"id":63,"jp":"どこで買える→電車の切符","template":"Where can I buy a train (ticket)?","options":["think","know","ticket","tired"],"answer":"ticket"},{"id":64,"jp":"やりすぎないでおこう","template":"Let's not go (overboard).","options":["cheering","overboard","vacation","understand"],"answer":"overboard"},{"id":65,"jp":"いつもらえる→結果","template":"When can I get the (result)?","options":["listened","going","result","rush"],"answer":"result"},{"id":66,"jp":"知らない→仲良くする方法→彼らと","template":"I don't know how to get (along) with them.","options":["night","tonight","along","heard"],"answer":"along"},{"id":67,"jp":"問題ありますか","template":"Is there any (problem)?","options":["college","concern","problem","thinking"],"answer":"problem"},{"id":68,"jp":"食べてもいい→これの一部","template":"Can I eat (some) of this?","options":["says","can't","some","cream"],"answer":"some"},{"id":69,"jp":"フライングしないでおこう","template":"Let's not jump the (gun).","options":["wrong","rude","gun","sneak"],"answer":"gun"},{"id":70,"jp":"ありますか→手伝えること→私が","template":"Is there anything I can (help) with?","options":["hungry","help","nap","first"],"answer":"help"},{"id":71,"jp":"この匂い→私をお腹すかせる","template":"This smell makes me (hungry).","options":["message","voice","vacation","hungry"],"answer":"hungry"},{"id":72,"jp":"どうやって減らす→体重","template":"How can I lose (weight)?","options":["says","time","coat","weight"],"answer":"weight"},{"id":73,"jp":"すみません→十分に説明しなくて","template":"I'm sorry for not explaining (sufficiently).","options":["optimistic","sufficiently","conversation","participate"],"answer":"sufficiently"},{"id":74,"jp":"借りてもいい→あなたを→少しの間","template":"Can I borrow you for a (second)?","options":["lunch","shizuoka","second","worrying"],"answer":"second"},{"id":75,"jp":"どうだった→休暇","template":"How was your (vacation)?","options":["slowly","friends","worrying","vacation"],"answer":"vacation"},{"id":76,"jp":"すみません→助けられなくて→あなたを","template":"I'm sorry for not being able to (help) you.","options":["guy","help","want","got"],"answer":"help"},{"id":77,"jp":"どんな店→あれは","template":"What kind of (shop) is that?","options":["shop","dare","kyoto","relax"],"answer":"shop"},{"id":78,"jp":"あまり知らない→彼について","template":"I don't know (much) about him.","options":["much","back","bad","help"],"answer":"much"},{"id":79,"jp":"踏んだ→あなたの足→ごめん","template":"Did I step on your foot? (Sorry).","options":["help","nine","Sorry","dinner"],"answer":"Sorry"},{"id":80,"jp":"知らない→どこで買える→チケット","template":"I don't know where I can buy (tickets).","options":["parents","light","umbrella","tickets"],"answer":"tickets"},{"id":81,"jp":"失敗→私を強くした","template":"Failures made me (strong).","options":["fail","confused","excited","strong"],"answer":"strong"},{"id":82,"jp":"どうだった→旅行","template":"How was your (trip)?","options":["wait","any","broke","trip"],"answer":"trip"},{"id":83,"jp":"どんな音楽→人気→日本で","template":"What kind of music is popular in (Japan)?","options":["july","real","Japan","teacher"],"answer":"Japan"},{"id":84,"jp":"教えるつもりはない→あなたに","template":"I'm not going to (tell) you.","options":["light","sit","tell","leave"],"answer":"tell"},{"id":85,"jp":"聞きたい→未来の計画について→あなたの","template":"I'd like to ask about your future (plans).","options":["plans","strong","rude","far"],"answer":"plans"},{"id":86,"jp":"預からせて→あなたのコート","template":"Let me take your (coat).","options":["bottle","done","weight","coat"],"answer":"coat"},{"id":87,"jp":"知らない→彼らを一人も","template":"I don't know (any) of them.","options":["can't","nine","train","any"],"answer":"any"},{"id":88,"jp":"ありがとう→元気づけてくれて","template":"Thank you for (cheering) me up.","options":["cheering","understood","account","advance"],"answer":"cheering"},{"id":89,"jp":"準備できてる→食べる","template":"Are you ready to (eat)?","options":["eat","run","nap","nine"],"answer":"eat"},{"id":90,"jp":"借りてもいい→鉛筆","template":"Can I borrow a (pencil)?","options":["pencil","sleep","password","dinner"],"answer":"pencil"},{"id":91,"jp":"教えて→出発する時→あなたが","template":"Let me know when you (leave).","options":["will","time","sure","leave"],"answer":"leave"},{"id":92,"jp":"ありますか→食べられないもの","template":"Is there anything you can't (eat)?","options":["voice","eat","form","best"],"answer":"eat"},{"id":93,"jp":"準備できてる→買い物に行く","template":"Are you ready to go (shopping)?","options":["delayed","shopping","station","blinds"],"answer":"shopping"},{"id":94,"jp":"買わないと→新しいコンピューター","template":"I need to buy a new (computer).","options":["college","computer","thinking","explode"],"answer":"computer"},{"id":95,"jp":"感謝したい→努力に→あなたの","template":"I'd like to thank you for your hard (work).","options":["work","says","july","taxi"],"answer":"work"},{"id":96,"jp":"期待しすぎないでおこう","template":"Let's not expect too (much).","options":["much","nine","real","plans"],"answer":"much"},{"id":97,"jp":"どうだった→初日→大学","template":"How was your first day at (college)?","options":["phone","memory","college","crying"],"answer":"college"},{"id":98,"jp":"どう買う→チケット→マドリード行き","template":"How can I buy a ticket for (Madrid)?","options":["Madrid","office","account","nine"],"answer":"Madrid"},{"id":99,"jp":"言った→何か間違ったこと","template":"Did I say something (wrong)?","options":["lunch","form","know","wrong"],"answer":"wrong"},{"id":100,"jp":"遅れないで","template":"Don't be (late).","options":["need","hard","late","phone"],"answer":"late"},{"id":101,"jp":"寄ってはどう→夕食に","template":"Why don't you stop by for (dinner)?","options":["charger","dinner","steps","excited"],"answer":"dinner"},{"id":102,"jp":"気分じゃない→散歩に行く","template":"I don't feel like going for a (walk).","options":["tell","buy","walk","talk"],"answer":"walk"},{"id":103,"jp":"知ってる→行き方→渋谷まで","template":"Do you know how to get to (Shibuya)?","options":["advance","hangover","heading","Shibuya"],"answer":"Shibuya"},{"id":104,"jp":"気分だ→外食する→今夜","template":"I feel like eating out (tonight).","options":["delayed","tonight","tickets","christmas"],"answer":"tonight"},{"id":105,"jp":"送った方がいい→このファイル→あなたに","template":"Should I send this (file) to you?","options":["file","listen","going","favor"],"answer":"file"},{"id":106,"jp":"気分だ→早く寝る","template":"I feel like going to bed (early).","options":["movie","crazy","give","early"],"answer":"early"},{"id":107,"jp":"食べなきゃいけない→私のブロッコリー","template":"Do I have to eat my (broccoli)?","options":["dentist","blinds","college","broccoli"],"answer":"broccoli"},{"id":108,"jp":"この部屋→狭すぎる→100人収容するには","template":"This room is too small to contain 100 (people).","options":["think","relax","good","people"],"answer":"people"},{"id":109,"jp":"いつまで有効?","template":"Until when is this (valid)?","options":["can't","books","wake","valid"],"answer":"valid"},{"id":110,"jp":"どう思った→私のスピーチ","template":"What did you think of my (speech)?","options":["speech","week","heading","broke"],"answer":"speech"},{"id":111,"jp":"待った方がいい→あなたを→駅で","template":"Should I wait for you at the (station)?","options":["station","sleep","happy","listened"],"answer":"station"},{"id":112,"jp":"忙しいに違いない→あなたは","template":"You must be (busy).","options":["busy","stingy","sorry","leave"],"answer":"busy"},{"id":113,"jp":"どれくらい待つ必要があるのか→思う","template":"I wonder how long we need to (wait).","options":["sleepy","wait","nap","friday"],"answer":"wait"},{"id":114,"jp":"言わなくていい→私に","template":"You don't have to (tell) me.","options":["broke","tell","cafe","hard"],"answer":"tell"},{"id":115,"jp":"お腹すいてるに違いない→あなたは","template":"You must be (hungry).","options":["button","message","trip","hungry"],"answer":"hungry"},{"id":116,"jp":"忘れた→持ってくるの→充電器","template":"I forgot to bring my (charger).","options":["ticket","cheated","charger","bucks"],"answer":"charger"},{"id":117,"jp":"そんなに悪いはずがない","template":"It can't be that (bad).","options":["bad","seek","math","best"],"answer":"bad"},{"id":118,"jp":"いつまでいる→オフィスに","template":"Until when are you going to stay in the (office)?","options":["office","rude","helped","teacher"],"answer":"office"},{"id":119,"jp":"やらなくていい→それ","template":"You (don't) have to do it.","options":["dinner","drink","don't","abroad"],"answer":"don't"},{"id":120,"jp":"どうしてそんなに残酷でいられるの","template":"How can you be so (cruel)?","options":["people","guy","thing","cruel"],"answer":"cruel"},{"id":121,"jp":"仕方ない","template":"It can't be (helped).","options":["walk","said","helped","dare"],"answer":"helped"},{"id":122,"jp":"昔は痩せていた","template":"I used to be (thin).","options":["nine","school","late","thin"],"answer":"thin"},{"id":123,"jp":"昔は彼が好きだった","template":"I used to (like) him.","options":["videos","crying","show","like"],"answer":"like"},{"id":124,"jp":"熱すぎる→食べるには","template":"This is too hot to (eat).","options":["eat","live","much","fail"],"answer":"eat"},{"id":125,"jp":"いい考えだと思わない?","template":"Don't you think that's a good (idea)?","options":["doctor","new","idea","ignore"],"answer":"idea"},{"id":126,"jp":"アンナのかもしれない→ジルのはずがない","template":"Could it be Anna's? It can't be (Jill's).","options":["back","Jill's","time","slice"],"answer":"Jill's"},{"id":127,"jp":"すみません→座ってもいい→ここに","template":"Excuse me, but can I (sit) here?","options":["sit","much","wait","sorry"],"answer":"sit"},{"id":128,"jp":"いつまで待つべき→あなたを","template":"Until when should I (wait) for you?","options":["wait","trip","show","says"],"answer":"wait"},{"id":129,"jp":"聞いたことある?","template":"Have you ever (heard) of it?","options":["better","heard","haircut","reason"],"answer":"heard"},{"id":130,"jp":"注文するのを忘れた→それ","template":"I forgot to (order) it.","options":["order","talk","heading","bed"],"answer":"order"},{"id":131,"jp":"楽しみにしている→行くの→ロサンゼルスへ","template":"I'm looking forward to (going) to LA.","options":["angry","ground","school","going"],"answer":"going"},{"id":132,"jp":"少し意地悪だと思わない?","template":"Don't you think that was a little (mean)?","options":["mean","crazy","show","dare"],"answer":"mean"},{"id":133,"jp":"そんなに難しいはずがない","template":"It can't be that (difficult).","options":["spanish","difficult","explode","seconds"],"answer":"difficult"},{"id":134,"jp":"知ってる→変更方法→パスワード","template":"Do you know how to change the (password)?","options":["abroad","password","dinner","ground"],"answer":"password"},{"id":135,"jp":"どう思う→彼の態度","template":"What do you think of his (attitude)?","options":["message","attitude","forget","tonight"],"answer":"attitude"},{"id":136,"jp":"連れてきたらどう→妹を→パーティーに","template":"Why don't you bring your sister to the (party)?","options":["people","got","party","voice"],"answer":"party"},{"id":137,"jp":"返信すべき→彼のメール","template":"Should I reply to his (email)?","options":["run","email","dollars","light"],"answer":"email"},{"id":138,"jp":"どれくらいの頻度→練習する","template":"How often do you (train)?","options":["almost","join","train","got"],"answer":"train"},{"id":139,"jp":"めったに外食しない","template":"I rarely (eat) out.","options":["eat","wish","wrong","love"],"answer":"eat"},{"id":140,"jp":"学ぶのに遅すぎることはない","template":"One is never too old to (learn).","options":["learn","walk","buy","result"],"answer":"learn"},{"id":141,"jp":"どこに向かっているのか→思う","template":"I wonder where we are (heading).","options":["cream","password","speech","heading"],"answer":"heading"},{"id":142,"jp":"謝らないと→彼に","template":"I must (apologize) to him.","options":["attitude","disturb","apologize","feelings"],"answer":"apologize"},{"id":143,"jp":"昔は遊んだ→かくれんぼ→ここで","template":"I used to play hide-and-(seek) here.","options":["happy","near","seek","nice"],"answer":"seek"},{"id":144,"jp":"どう思った→その映画","template":"What did you think of the (movie)?","options":["secret","movie","don't","seek"],"answer":"movie"},{"id":145,"jp":"ブルーノに違いない→あなたは","template":"You must be (Bruno).","options":["Bruno","spanish","thin","weight"],"answer":"Bruno"},{"id":146,"jp":"楽しみにしている→会うの→あなたの父に","template":"I'm looking forward to meeting your (father).","options":["weight","father","tired","show"],"answer":"father"},{"id":147,"jp":"若すぎる→理解するには→これを","template":"You are too young to (understand) this.","options":["overboard","understand","bothering","laughing"],"answer":"understand"},{"id":148,"jp":"どう思う→私の新しいスーツ","template":"What do you think of my new (suit)?","options":["time","suit","things","happen"],"answer":"suit"},{"id":149,"jp":"そんなに意地悪する必要はない","template":"You don't have to be so (mean).","options":["run","abroad","mean","sign"],"answer":"mean"},{"id":150,"jp":"どれを選ぶべきか→思う","template":"I wonder which one I should (choose).","options":["sneak","concern","choose","list"],"answer":"choose"},{"id":151,"jp":"髪を切ったらどう","template":"Why don't you get a (haircut)?","options":["school","haircut","leave","anxious"],"answer":"haircut"},{"id":152,"jp":"どれくらいの頻度→来る→日本に","template":"How often do you come to (Japan)?","options":["busy","cry","live","Japan"],"answer":"Japan"},{"id":153,"jp":"生魚→食べたことある?","template":"Have you ever eaten raw (fish)?","options":["fish","crying","speech","lunch"],"answer":"fish"},{"id":154,"jp":"本物のはずがない","template":"It can't be (real).","options":["alone","friday","fish","real"],"answer":"real"},{"id":155,"jp":"あなたの言う通りにしなきゃいけない?","template":"Do I have to do as you (say)?","options":["wish","say","first","talk"],"answer":"say"},{"id":156,"jp":"先にご飯を炊いた方がいい?","template":"Should I cook the rice (first)?","options":["first","nice","golf","almost"],"answer":"first"},{"id":157,"jp":"どうしてそんなに楽観的でいられるの","template":"How can you be so (optimistic)?","options":["earthquake","conversation","understand","optimistic"],"answer":"optimistic"},{"id":158,"jp":"どう思う→彼女のこと","template":"What do you (think) of her?","options":["people","july","done","think"],"answer":"think"},{"id":159,"jp":"泣きたい気分","template":"I feel like (crying).","options":["baseball","friday","crying","heard"],"answer":"crying"},{"id":160,"jp":"知ってる→アップロード方法→これらの動画","template":"Do you know how to upload these (videos)?","options":["question","form","videos","walk"],"answer":"videos"},{"id":161,"jp":"いつまでいる→日本に","template":"Until when will you be in (Japan)?","options":["crying","ask","Japan","sit"],"answer":"Japan"},{"id":162,"jp":"めったに海外旅行しない","template":"I rarely travel (abroad).","options":["valid","confused","said","abroad"],"answer":"abroad"},{"id":163,"jp":"めったに風邪をひかない","template":"I rarely catch a (cold).","options":["cold","tired","today","fail"],"answer":"cold"},{"id":164,"jp":"疲れているに違いない→あなたは","template":"You must be (tired).","options":["tired","mad","see","french"],"answer":"tired"},{"id":165,"jp":"楽しみにしている→一人で家にいること","template":"I'm looking forward to being alone in the (house).","options":["house","jill's","people","live"],"answer":"house"},{"id":166,"jp":"誘ったらどう→彼女を","template":"Why don't you (ask) her out?","options":["wait","phone","ask","like"],"answer":"ask"},{"id":167,"jp":"少しわがままだと思わない?","template":"Don't you think she is a bit (selfish)?","options":["selfish","college","cupcakes","almost"],"answer":"selfish"},{"id":168,"jp":"その本→あなたには簡単すぎると思わない?","template":"Don't you think that book is too (easy) for you?","options":["sit","easy","doctor","matter"],"answer":"easy"},{"id":169,"jp":"熱すぎる→飲むには→このスープ","template":"This soup is too hot to (drink).","options":["listen","today","drink","angry"],"answer":"drink"},{"id":170,"jp":"忘れた→アラームをセットするの","template":"I forgot to set the (alarm).","options":["alarm","happy","real","happen"],"answer":"alarm"},{"id":171,"jp":"どうしてそんなに優しくできる→彼に","template":"How can you be so (nice) to him?","options":["guy","nice","some","wake"],"answer":"nice"},{"id":172,"jp":"何もする気がしない","template":"I don't feel like doing (anything).","options":["morning","result","weight","anything"],"answer":"anything"},{"id":173,"jp":"めったに本を読まない","template":"I rarely read (books).","options":["books","home","happy","sneak"],"answer":"books"},{"id":174,"jp":"忘れた→持ってくるの→図書館の本","template":"I forgot to bring the library (book).","options":["year","rude","happen","book"],"answer":"book"},{"id":175,"jp":"知ってる→翻訳方法→これをフランス語に","template":"Do you know how to translate this into (French)?","options":["French","will","mind","homework"],"answer":"French"},{"id":176,"jp":"返事をもらうの→楽しみにしている→あなたから","template":"I'm looking forward to hearing (back) from you.","options":["harder","videos","back","gun"],"answer":"back"},{"id":177,"jp":"すみません→もう少しゆっくり話せますか","template":"Excuse me, but could you speak a little more (slowly)?","options":["station","slowly","confused","time"],"answer":"slowly"},{"id":178,"jp":"どれくらいの頻度→歯医者に行く","template":"How often do you see a (dentist)?","options":["truth","blinds","alone","dentist"],"answer":"dentist"},{"id":179,"jp":"なぜ来なかったのか→彼女","template":"I wonder why she didn't (come).","options":["give","thing","advice","come"],"answer":"come"},{"id":180,"jp":"作らないと→買い物リスト","template":"I must make a shopping (list).","options":["love","cafe","pencil","list"],"answer":"list"},{"id":181,"jp":"明日雨が降るかどうか→思う","template":"I wonder if it will rain (tomorrow).","options":["pictures","password","tomorrow","excited"],"answer":"tomorrow"},{"id":182,"jp":"どうしてわかるの?","template":"How can you (tell)?","options":["see","said","tell","ask"],"answer":"tell"},{"id":183,"jp":"行ったことある→京都","template":"Have you ever been to (Kyoto)?","options":["busy","voice","dinner","Kyoto"],"answer":"Kyoto"},{"id":184,"jp":"めったに帰らない→実家に","template":"I rarely go back to my parents' (house).","options":["tell","hurt","house","little"],"answer":"house"},{"id":185,"jp":"どれくらいの頻度→ゴルフする","template":"How often do you play (golf)?","options":["toast","golf","ask","time"],"answer":"golf"},{"id":186,"jp":"すみません→質問があります","template":"Excuse me, but I have a (question).","options":["vacation","question","refund","breakfast"],"answer":"question"},{"id":187,"jp":"すみません→理解できません→それはどういう意味ですか","template":"Excuse me, but I don't understand. What does it (mean)?","options":["helped","mean","going","fail"],"answer":"mean"},{"id":188,"jp":"どうしてそんなこと言えるの","template":"How can you say such a (thing)?","options":["office","tired","thing","voice"],"answer":"thing"},{"id":189,"jp":"地震→経験したことある?","template":"Have you ever experienced an (earthquake)?","options":["conversation","earthquake","childhood","information"],"answer":"earthquake"},{"id":190,"jp":"浮気されたことある?","template":"Have you ever been (cheated) on?","options":["second","english","cheated","christmas"],"answer":"cheated"},{"id":191,"jp":"スーツ着なきゃいけない?","template":"Do I have to wear a (suit)?","options":["suit","easy","sure","happy"],"answer":"suit"},{"id":192,"jp":"すみません→お願いできますか","template":"Excuse me, but could you do me a (favor)?","options":["favor","told","seconds","party"],"answer":"favor"},{"id":193,"jp":"これ買わなきゃいけない?","template":"Do I have to (buy) this?","options":["trip","books","come","buy"],"answer":"buy"},{"id":194,"jp":"いつまでキャンセルできる→予約","template":"Until when can I cancel my (reservation)?","options":["christmas","earthquake","reservation","vegetarian"],"answer":"reservation"},{"id":195,"jp":"昔は友達だった→彼と","template":"I used to be (friends) with him.","options":["seconds","reason","cupcakes","friends"],"answer":"friends"},{"id":196,"jp":"謝らなくていい","template":"You don't have to (apologize).","options":["reservation","tickets","apologize","bookshelf"],"answer":"apologize"},{"id":197,"jp":"そのクイズ→少し難しいと思わない?","template":"Don't you think the quiz is a bit (difficult)?","options":["memories","difficult","mistakes","shizuoka"],"answer":"difficult"},{"id":198,"jp":"楽しみにしている→あなたの授業→来週","template":"I'm looking forward to your class next (week).","options":["week","mean","better","cream"],"answer":"week"},{"id":199,"jp":"昼寝したらどう","template":"Why don't you take a (nap)?","options":["nap","cafe","work","idea"],"answer":"nap"},{"id":200,"jp":"見舞いに行かないと→病気の友人","template":"I must inquire after my sick (friend).","options":["come","friend","umbrella","password"],"answer":"friend"},{"id":201,"jp":"個人的に話さないと→あなたと","template":"I must talk to you (privately).","options":["advance","selfish","memories","privately"],"answer":"privately"},{"id":202,"jp":"わくわくしているに違いない→あなたは","template":"You must be (excited).","options":["sorry","videos","reply","excited"],"answer":"excited"},{"id":203,"jp":"忘れた→ゴミを出すの","template":"I forgot to take the (trash) out.","options":["trash","hard","listen","advice"],"answer":"trash"},{"id":204,"jp":"どれくらいの頻度→会う→彼に","template":"How often do you (see) him?","options":["taxi","new","wish","see"],"answer":"see"},{"id":205,"jp":"一生懸命勉強しないと","template":"I must study (hard).","options":["shop","hard","people","fish"],"answer":"hard"},{"id":206,"jp":"前払いしなきゃいけない?","template":"Do I have to pay in (advance)?","options":["jill's","order","steps","advance"],"answer":"advance"},{"id":207,"jp":"知ってる→食べ方→これ","template":"Do you know how to (eat) this?","options":["eat","idea","ask","real"],"answer":"eat"},{"id":208,"jp":"全部知る必要はない","template":"You don't have to know (everything).","options":["emotional","understood","listened","everything"],"answer":"everything"},{"id":209,"jp":"昔は住んでいた→ロンドンに","template":"I used to live in (London).","options":["give","London","wake","crazy"],"answer":"London"},{"id":210,"jp":"傘を持って行った方がいい?","template":"Should I take an (umbrella)?","options":["umbrella","almost","laughing","something"],"answer":"umbrella"},{"id":211,"jp":"一人で食べてもかまわない","template":"I don't mind eating (alone).","options":["far","steps","show","alone"],"answer":"alone"},{"id":212,"jp":"なぜ訪れる→高知→毎年","template":"Why do you visit Kochi every (year)?","options":["know","thin","year","call"],"answer":"year"},{"id":213,"jp":"なぜ来なかった→電車で","template":"Why didn't you come by (train)?","options":["tired","speech","train","join"],"answer":"train"},{"id":214,"jp":"傷つけるつもりはなかった→彼女の気持ちを","template":"I didn't mean to hurt her (feelings).","options":["documents","refund","worrying","feelings"],"answer":"feelings"},{"id":215,"jp":"この場所が好き→なぜか","template":"I like this place for some (reason).","options":["result","message","reason","wake"],"answer":"reason"},{"id":216,"jp":"努力する価値がある","template":"It's worth the (effort).","options":["work","sorry","college","effort"],"answer":"effort"},{"id":217,"jp":"言うことに気をつけて","template":"Be careful of what you (say).","options":["need","relax","say","catch"],"answer":"say"},{"id":218,"jp":"ビールを飲まずにいられない","template":"I can't help drinking (beer).","options":["beer","trip","sorry","new"],"answer":"beer"},{"id":219,"jp":"英語で連絡してもかまわない→私に","template":"I don't mind if you contact me in (English).","options":["English","college","people","surprise"],"answer":"English"},{"id":220,"jp":"最後のピザ一切れを取ることができた","template":"I managed to grab the last slice of (pizza).","options":["pizza","train","call","trash"],"answer":"pizza"},{"id":221,"jp":"だから言ったんだ→あなたに","template":"That's why I (told) you.","options":["told","run","new","don't"],"answer":"told"},{"id":222,"jp":"そんなこと聞いたことがない","template":"I've never heard such a (thing).","options":["advance","leave","madrid","thing"],"answer":"thing"},{"id":223,"jp":"野球の代わりにサッカーしてもかまわない","template":"I don't mind if we play soccer instead of (baseball).","options":["speech","helped","concern","baseball"],"answer":"baseball"},{"id":224,"jp":"なぜ来てほしい→私に","template":"Why do you want me to (come)?","options":["plans","come","buy","help"],"answer":"come"},{"id":225,"jp":"なぜ試さなかった?","template":"Why didn't you give it a (try)?","options":["know","steps","learn","try"],"answer":"try"},{"id":226,"jp":"彼の助言に従うだけでいい","template":"All you have to do is follow his (advice).","options":["advice","told","seconds","message"],"answer":"advice"},{"id":227,"jp":"地図によると→もうすぐ着く","template":"According to the map, we are (almost) there.","options":["office","suit","lunch","almost"],"answer":"almost"},{"id":228,"jp":"この歌を聞くたび→子供時代を思い出す","template":"Whenever I listen to this song, I'm reminded of my (childhood).","options":["childhood","anything","dentist","everything"],"answer":"childhood"},{"id":229,"jp":"寒くても平気","template":"I don't mind the (cold).","options":["cold","taxi","ground","say"],"answer":"cold"},{"id":230,"jp":"なぜこれを選んだ?","template":"Why did you (choose) this?","options":["message","morning","train","choose"],"answer":"choose"},{"id":231,"jp":"怒らずにいられない","template":"I can't help being (angry).","options":["charger","angry","late","seconds"],"answer":"angry"},{"id":232,"jp":"なぜ働きたい→海外で","template":"Why do you want to work (abroad)?","options":["abroad","toast","bruno","cold"],"answer":"abroad"},{"id":233,"jp":"医者に行った方がいい","template":"You'd better see a (doctor).","options":["list","order","doctor","advance"],"answer":"doctor"},{"id":234,"jp":"100万ドルの価値がある","template":"It's worth a million (dollars).","options":["dollars","happen","movie","pencil"],"answer":"dollars"},{"id":235,"jp":"二度と起こらないようにして","template":"Make sure this does not (happen) again.","options":["told","exam","happen","idea"],"answer":"happen"},{"id":236,"jp":"星占いによると→今日は運がいい","template":"According to the horoscope, you will be lucky (today).","options":["fail","voice","seek","today"],"answer":"today"},{"id":237,"jp":"なぜか亀田さんは来る→明日","template":"For some reason, Mr. Kameda will come (tomorrow).","options":["understand","tomorrow","harder","bottle"],"answer":"tomorrow"},{"id":238,"jp":"数学が得意だったことがない","template":"I've never been good at (math).","options":["pizza","party","cream","math"],"answer":"math"},{"id":239,"jp":"メリークリスマスと言いたかっただけ","template":"I just wanted to say Merry (Christmas).","options":["disturb","cupcakes","station","Christmas"],"answer":"Christmas"},{"id":240,"jp":"ごめんなさい→驚かせるつもりはなかった→あなたを","template":"I'm so sorry. I didn't mean to (surprise) you.","options":["laughing","advice","surprise","effort"],"answer":"surprise"},{"id":241,"jp":"一石二鳥を計画している","template":"I'm planning to kill two birds with one (stone).","options":["dinner","stone","sleepy","got"],"answer":"stone"},{"id":242,"jp":"早起きに慣れている","template":"I'm used to getting up (early).","options":["early","eat","help","today"],"answer":"early"},{"id":243,"jp":"天気予報によると→明日は晴れる","template":"According to the forecast, it will be sunny (tomorrow).","options":["anxious","college","opinion","tomorrow"],"answer":"tomorrow"},{"id":244,"jp":"もう寝るところだ","template":"I'm about to go to (sleep).","options":["message","helping","second","sleep"],"answer":"sleep"},{"id":245,"jp":"なぜそれをやりたい?","template":"Why do you (want) to do that?","options":["second","bad","want","much"],"answer":"want"},{"id":246,"jp":"ブラインドを上げてもいい?","template":"Do you mind if I draw up the (blinds)?","options":["blinds","coat","shopping","early"],"answer":"blinds"},{"id":247,"jp":"地面に落ちる前に→コップをつかめた","template":"I managed to catch the glass before it hit the (ground).","options":["ground","phone","worrying","thing"],"answer":"ground"},{"id":248,"jp":"そのことを心配せずにいられない","template":"I can't help (worrying) about that.","options":["worrying","computer","dinner","understand"],"answer":"worrying"},{"id":249,"jp":"あれをやっておけばよかった","template":"I wish I had (done) it.","options":["need","done","join","fail"],"answer":"done"},{"id":250,"jp":"少しずつ慣れてきている","template":"I'm getting used to it (little) by little.","options":["cheated","charger","listened","little"],"answer":"little"},{"id":251,"jp":"段差に気をつけて","template":"Be careful of the (steps).","options":["steps","reply","heard","account"],"answer":"steps"},{"id":252,"jp":"だから彼女が好き","template":"That's why I (like) her.","options":["drink","run","broke","like"],"answer":"like"},{"id":253,"jp":"邪魔するつもりはなかった→あなたを","template":"I didn't mean to (disturb) you.","options":["disturb","emotional","explode","light"],"answer":"disturb"},{"id":254,"jp":"学生のときもっと頑張ればよかった","template":"I wish I had worked harder when I was at (school).","options":["cheering","school","will","movie"],"answer":"school"},{"id":255,"jp":"また遅れない方がいい","template":"You'd better not be (late) again.","options":["late","sign","bed","fail"],"answer":"late"},{"id":256,"jp":"読む価値がある","template":"It's worth (reading).","options":["forget","father","feelings","reading"],"answer":"reading"},{"id":257,"jp":"全力を尽くすだけでいい","template":"All you have to do is do your (best).","options":["office","idea","easy","best"],"answer":"best"},{"id":258,"jp":"まだ慣れていない→新しい仕事に","template":"I'm still not used to my new (job).","options":["back","job","wrong","drink"],"answer":"job"},{"id":259,"jp":"質問したかっただけ","template":"I just wanted to ask a (question).","options":["dollars","question","apologize","feelings"],"answer":"question"},{"id":260,"jp":"彼女を理解したことがない","template":"I've never (understood) her.","options":["vacation","complaining","question","understood"],"answer":"understood"},{"id":261,"jp":"話を聞いてほしかっただけ","template":"I just wanted to be (listened) to.","options":["stingy","situation","listened","hungry"],"answer":"listened"},{"id":262,"jp":"批判されることに慣れている","template":"I'm used to being (criticized).","options":["childhood","situation","listened","criticized"],"answer":"criticized"},{"id":263,"jp":"言葉の選び方に気をつけて","template":"Be careful in your choice of (words).","options":["words","house","bag","can't"],"answer":"words"},{"id":264,"jp":"終電に間に合った","template":"I managed to catch the last (train).","options":["help","kyoto","train","think"],"answer":"train"},{"id":265,"jp":"最後の一切れをもらってもいい?","template":"Do you mind if I have the last (slice)?","options":["hurt","forget","broke","slice"],"answer":"slice"},{"id":266,"jp":"宿題を終えることができた","template":"I managed to finish my (homework).","options":["better","homework","ticket","disturb"],"answer":"homework"},{"id":267,"jp":"今まで海外に行ったことがない","template":"I've never been (abroad) before.","options":["wake","cheering","abroad","words"],"answer":"abroad"},{"id":268,"jp":"ここに座ってもいい?","template":"Do you mind if I (sit) here?","options":["cruel","wrong","party","sit"],"answer":"sit"},{"id":269,"jp":"私が考えていたことだ","template":"That's what I was (thinking).","options":["second","thinking","button","office"],"answer":"thinking"},{"id":270,"jp":"だから彼女は怒った→あなたに","template":"That's why she got (angry) with you.","options":["angry","say","sneak","sorry"],"answer":"angry"},{"id":271,"jp":"朝食を抜くことに慣れている","template":"I'm used to skipping (breakfast).","options":["friends","breakfast","documents","laughing"],"answer":"breakfast"},{"id":272,"jp":"彼らのライブを考えるたび興奮する","template":"I get so excited whenever I think about their live (performances).","options":["performances","vegetarian","participate","understand"],"answer":"performances"},{"id":273,"jp":"だから彼は遅れた","template":"That's why he was (late).","options":["most","late","london","told"],"answer":"late"},{"id":274,"jp":"もっと時間があればよかった","template":"I wish I had more (time).","options":["time","good","angry","speech"],"answer":"time"},{"id":275,"jp":"爆発しそうだ","template":"I'm about to (explode).","options":["train","voice","explode","effort"],"answer":"explode"},{"id":276,"jp":"私の知る限り→彼はいい人だ","template":"As far as I know, he is a nice (guy).","options":["guy","early","lunch","dare"],"answer":"guy"},{"id":277,"jp":"それが私の知っている彼のことだ","template":"That's what I (know) about him.","options":["hurt","house","know","easy"],"answer":"know"},{"id":278,"jp":"彼の話を聞いた方がいい","template":"You'd better (listen) to him.","options":["question","listen","harder","matter"],"answer":"listen"},{"id":279,"jp":"今ちょうど電話しようとしている→彼女に","template":"I'm just about to (call) her.","options":["jill's","call","ticket","train"],"answer":"call"},{"id":280,"jp":"行く価値がある","template":"It's worth (going).","options":["going","sad","good","like"],"answer":"going"},{"id":281,"jp":"けがしないように気をつけて","template":"Please be careful not to get (hurt).","options":["hurt","book","cry","pencil"],"answer":"hurt"},{"id":282,"jp":"ここに一週間滞在する予定","template":"I'm planning to stay here for a (week).","options":["week","almost","says","catch"],"answer":"week"},{"id":283,"jp":"全力を尽くした方がいい","template":"You'd better give it all you've (got).","options":["sign","got","first","bed"],"answer":"got"},{"id":284,"jp":"なぜか彼女は泣き出した","template":"For some reason, she started (crying).","options":["crying","math","anxious","things"],"answer":"crying"},{"id":285,"jp":"今までで一番調子がいい","template":"I've never felt (better).","options":["message","stone","better","home"],"answer":"better"},{"id":286,"jp":"私の知る限り→テストは金曜日だ","template":"As far as I know, the test is on (Friday).","options":["charger","Friday","laughing","hard"],"answer":"Friday"},{"id":287,"jp":"なぜか寒気がした","template":"I felt a chill for some (reason).","options":["says","steps","reason","nine"],"answer":"reason"},{"id":288,"jp":"確認したかっただけ→それを","template":"I just wanted to make (sure) of it.","options":["sure","refund","want","reply"],"answer":"sure"},{"id":289,"jp":"今日は日曜→くつろぐだけでいい","template":"It's Sunday, so all you have to do is (relax).","options":["know","test","house","relax"],"answer":"relax"},{"id":290,"jp":"だから高給をくれる→私に","template":"That's why they pay me the big (bucks).","options":["idea","father","bucks","most"],"answer":"bucks"},{"id":291,"jp":"将来を考えるたび不安になる","template":"Whenever I think about my future, I get (anxious).","options":["button","cheated","anxious","sneak"],"answer":"anxious"},{"id":292,"jp":"彼の返事を待つだけでいい","template":"All you have to do is wait for his (reply).","options":["reply","slowly","will","wish"],"answer":"reply"},{"id":293,"jp":"小さなカフェを開く予定","template":"I'm planning to open a little (cafe).","options":["effort","relax","cafe","alarm"],"answer":"cafe"},{"id":294,"jp":"飲みすぎないように気をつけて","template":"Please be careful not to drink too (much).","options":["much","happen","office","refund"],"answer":"much"},{"id":295,"jp":"試す価値がある","template":"It's worth a (try).","options":["cruel","need","try","come"],"answer":"try"},{"id":296,"jp":"気が狂いそうだ","template":"I'm about to go (crazy).","options":["dentist","heading","crazy","french"],"answer":"crazy"},{"id":297,"jp":"それが好きなところだ→彼の","template":"That's what I (love) about him.","options":["today","ticket","love","tired"],"answer":"love"},{"id":298,"jp":"助けたかっただけ","template":"I just wanted to (help).","options":["thin","thing","help","late"],"answer":"help"},{"id":299,"jp":"私の知る限り→彼は菜食主義者だ","template":"As far as I know, he is a (vegetarian).","options":["listened","vegetarian","hangover","pictures"],"answer":"vegetarian"},{"id":300,"jp":"","template":"As far as I know, she's telling the (truth).(私の知る限り→彼女は本当のことを言っている.","options":["secret","truth","want","done"],"answer":"truth"},{"id":301,"jp":"彼によると→家に帰れる","template":"According to him, we can go (home).","options":["steps","cruel","home","bottle"],"answer":"home"},{"id":302,"jp":"なぜ何も言わなかった?","template":"Why didn't you say (anything)?","options":["anything","memory","cheated","father"],"answer":"anything"},{"id":303,"jp":"あなたからメッセージが来るたび→嬉しい","template":"Whenever I get a message from you, I feel (happy).","options":["father","slice","happy","job"],"answer":"happy"},{"id":304,"jp":"3時半までに戻るようにして","template":"Make sure you're (back) by 3:30.","options":["suit","nice","back","far"],"answer":"back"},{"id":305,"jp":"評論家によると→素晴らしい映画","template":"According to the critics, it's a great (movie).","options":["listen","choose","voice","movie"],"answer":"movie"},{"id":306,"jp":"それが言おうとしていたことだ","template":"That's what I was trying to (say).","options":["say","favor","coat","taxi"],"answer":"say"},{"id":307,"jp":"どこに行ってもかまわない","template":"I don't (mind) where we go.","options":["catch","real","mind","wrong"],"answer":"mind"},{"id":308,"jp":"盗み聞きするつもりはなかった→あなたの会話を","template":"I didn't mean to eavesdrop on your (conversation).","options":["inconvenience","sufficiently","conversation","everything"],"answer":"conversation"},{"id":309,"jp":"出かける前にエアコンを消すようにして","template":"Make sure you turn off the air conditioners before you (leave).","options":["crazy","bike","french","leave"],"answer":"leave"},{"id":310,"jp":"一緒に行けたらいいのに→あなたと","template":"I (wish) I could go with you.","options":["friend","far","effort","wish"],"answer":"wish"},{"id":311,"jp":"それが私の聞いたことだ","template":"That's what I (heard).","options":["heard","order","friend","suit"],"answer":"heard"},{"id":312,"jp":"あなたの声を聞くたび安心する","template":"I feel relieved whenever I hear your (voice).","options":["voice","kyoto","eat","show"],"answer":"voice"},{"id":313,"jp":"質問してもいい→あなたに","template":"Do you mind if I ask you a (question)?","options":["question","situation","cheated","school"],"answer":"question"},{"id":314,"jp":"一緒に参加してもいい?","template":"Do you mind if I (join) you?","options":["join","heard","sleep","kyoto"],"answer":"join"},{"id":315,"jp":"急かすつもりはなかった→あなたを","template":"I didn't mean to (rush) you.","options":["friend","rush","near","matter"],"answer":"rush"},{"id":316,"jp":"このボタンを押すだけでいい","template":"All you have to do is press this (button).","options":["ground","vacation","button","week"],"answer":"button"},{"id":317,"jp":"なぜ返事しなかった→彼に","template":"Why didn't you (reply) to him?","options":["shibuya","come","reply","second"],"answer":"reply"},{"id":318,"jp":"今まさに電車に乗るところだ","template":"I'm about to get on the (train).","options":["near","strong","order","train"],"answer":"train"},{"id":319,"jp":"私の知る限り→必要なものは全部そろっている","template":"As far as I know, we have everything we (need).","options":["mind","madrid","need","london"],"answer":"need"},{"id":320,"jp":"なぜか今日は金曜だと思い続けている","template":"For some reason, I keep thinking it's Friday (today).","options":["today","lunch","spanish","new"],"answer":"today"},{"id":321,"jp":"静岡の姉を訪ねる予定","template":"I'm planning to visit my sister in (Shizuoka).","options":["Shizuoka","anything","better","surprise"],"answer":"Shizuoka"},{"id":322,"jp":"忘れないようにして→それを","template":"Make sure you don't (forget) it.","options":["trip","forget","confused","vacation"],"answer":"forget"},{"id":323,"jp":"笑わずにいられなかった","template":"I couldn't help (laughing).","options":["friends","attitude","laughing","sleepy"],"answer":"laughing"},{"id":324,"jp":"走った方がいい","template":"You'd better (run).","options":["japan","run","some","dare"],"answer":"run"},{"id":325,"jp":"彼女を気の毒に思わずにいられない","template":"I can't help feeling (sorry) for her.","options":["stingy","sorry","helped","any"],"answer":"sorry"},{"id":326,"jp":"もっと記憶力があればよかった","template":"I wish I had a better (memory).","options":["button","hangover","memory","favor"],"answer":"memory"},{"id":327,"jp":"こっそり抜け出すことができた","template":"I managed to (sneak) out.","options":["slowly","sneak","hurt","excited"],"answer":"sneak"},{"id":328,"jp":"なぜ出さなかった→申込書","template":"Why didn't you submit the application (form)?","options":["july","rude","wake","form"],"answer":"form"},{"id":329,"jp":"7月4日に出発する予定","template":"I'm planning to leave on the 4th of (July).","options":["done","July","coat","want"],"answer":"July"},{"id":330,"jp":"夕食前に片付けるようにして","template":"Make sure you tidy up before (dinner).","options":["cream","valid","dinner","memories"],"answer":"dinner"},{"id":331,"jp":"何かいいことをしたに違いない","template":"You must have done something (good).","options":["mad","call","good","japan"],"answer":"good"},{"id":332,"jp":"疲れて当然だ→あなたは","template":"No wonder you're (tired).","options":["tired","happy","some","train"],"answer":"tired"},{"id":333,"jp":"風邪をひいたかもしれない","template":"I might have caught a (cold).","options":["exam","jill's","ask","cold"],"answer":"cold"},{"id":334,"jp":"よくもそんなことを","template":"How (dare) you?","options":["come","speech","friday","dare"],"answer":"dare"},{"id":335,"jp":"アイスクリームはいかがですか","template":"Would you like some ice (cream)?","options":["cream","year","tickets","give"],"answer":"cream"},{"id":336,"jp":"ぜひそうしたいけど→他の予定がある","template":"I'd love to, but I have other (plans).","options":["plans","early","late","shop"],"answer":"plans"},{"id":337,"jp":"よくも口答えするな→私に","template":"How dare you talk (back) to me?","options":["wake","some","back","tired"],"answer":"back"},{"id":338,"jp":"気持ちを傷つけたことを後悔している→あなたの","template":"I regret hurting your (feelings).","options":["madrid","feelings","opinion","optimistic"],"answer":"feelings"},{"id":339,"jp":"率直な意見を聞けて嬉しい→あなたの","template":"I'm happy to hear your frank (opinion).","options":["difficult","opinion","house","delayed"],"answer":"opinion"},{"id":340,"jp":"毎朝ベッドを整えることになっている","template":"You are supposed to make the bed every (morning).","options":["along","cheering","morning","bucks"],"answer":"morning"},{"id":341,"jp":"疲れていたに違いない→あなたは","template":"You must have been (tired).","options":["thing","night","tired","know"],"answer":"tired"},{"id":342,"jp":"もし飛行機が遅れたら?","template":"What if the flight is (delayed)?","options":["delayed","london","interview","worrying"],"answer":"delayed"},{"id":343,"jp":"ビールの方がいい","template":"I'd rather drink (beer).","options":["helped","home","plans","beer"],"answer":"beer"},{"id":344,"jp":"ここで会えて嬉しい→あなたに","template":"I'm happy to (see) you here.","options":["need","see","hard","learn"],"answer":"see"},{"id":345,"jp":"おかわりはいかがですか","template":"Would you like (seconds)?","options":["ticket","seconds","colleague","shibuya"],"answer":"seconds"},{"id":346,"jp":"歩く方がいい","template":"I'd rather (walk).","options":["walk","bad","got","some"],"answer":"walk"},{"id":347,"jp":"残念だけどできない","template":"I'm afraid I (can't).","options":["can't","speech","fish","father"],"answer":"can't"},{"id":348,"jp":"携帯をタクシーに置き忘れたかもしれない","template":"I might have left my mobile in the (taxi).","options":["taxi","school","speech","wish"],"answer":"taxi"},{"id":349,"jp":"昨夜食べすぎたことを後悔している","template":"I regret eating too much last (night).","options":["night","excited","sneak","coat"],"answer":"night"},{"id":350,"jp":"気持ちを傷つけたなら謝ります→あなたの","template":"I apologize if I hurt your (feelings).","options":["feelings","french","haircut","heading"],"answer":"feelings"},{"id":351,"jp":"太ったのも当然だ","template":"No wonder I gained (weight).","options":["stone","beer","memory","weight"],"answer":"weight"},{"id":352,"jp":"いかがですか","template":"Would you like (some)?","options":["some","weight","father","school"],"answer":"some"},{"id":353,"jp":"よくも無視するな→彼女を","template":"How dare you (ignore) her?","options":["cheering","choose","like","ignore"],"answer":"ignore"},{"id":354,"jp":"あんなこと言うべきじゃなかった","template":"I should not have (said) that.","options":["speech","happen","home","said"],"answer":"said"},{"id":355,"jp":"袋はいかがですか","template":"Would you like a (bag)?","options":["nice","beer","bag","talk"],"answer":"bag"},{"id":356,"jp":"もし彼女がノーと言ったら?","template":"What if she (says) no?","options":["mad","says","wake","phone"],"answer":"says"},{"id":357,"jp":"イギリスに住む方がいい","template":"I'd rather (live) in the UK.","options":["mind","live","some","party"],"answer":"live"},{"id":358,"jp":"遅れたのも当然だ→あなたは","template":"No wonder you were (late).","options":["late","guy","taxi","learn"],"answer":"late"},{"id":359,"jp":"秘密を守ることになっている","template":"You are supposed to keep a (secret).","options":["secret","nice","account","dollars"],"answer":"secret"},{"id":360,"jp":"赤信号で止まることになっている","template":"You are supposed to stop at the red (light).","options":["good","light","plans","hungry"],"answer":"light"},{"id":361,"jp":"もっと練習すべきだった","template":"I should have practiced (more).","options":["more","talk","broke","work"],"answer":"more"},{"id":362,"jp":"あなたを愛せて嬉しい","template":"I'm happy to (love) you.","options":["people","love","more","learn"],"answer":"love"},{"id":363,"jp":"ぜひそうしたいけど→お金がない","template":"I'd love to, but I'm (broke).","options":["file","done","effort","broke"],"answer":"broke"},{"id":364,"jp":"先生の話を聞くべきだった","template":"I should have listened to the (teacher).","options":["thinking","teacher","bothering","sorry"],"answer":"teacher"},{"id":365,"jp":"よくもそんなことを言うな","template":"How dare you say such a (thing)?","options":["thing","sad","blinds","wake"],"answer":"thing"},{"id":366,"jp":"ぜひそうしたいけど→忙しい","template":"I'd love to, but I'm (busy).","options":["help","drink","busy","angry"],"answer":"busy"},{"id":367,"jp":"ここで写真を撮ってはいけない","template":"You're not supposed to take (pictures) here.","options":["dinner","charger","pictures","understand"],"answer":"pictures"},{"id":368,"jp":"転職したことを後悔している","template":"I regret changing (jobs).","options":["jobs","email","more","home"],"answer":"jobs"},{"id":369,"jp":"混乱させたかもしれない→あなたを","template":"I might have (confused) you.","options":["confused","opinion","haircut","bothering"],"answer":"confused"},{"id":370,"jp":"もっと勉強すべきだった","template":"I should have studied (harder).","options":["call","harder","cream","like"],"answer":"harder"},{"id":371,"jp":"誤解していたなら謝ります→あなたを","template":"I apologize if I (misunderstood) you.","options":["misunderstood","performances","information","complaining"],"answer":"misunderstood"},{"id":372,"jp":"彼に失礼をしたに違いない","template":"You must have been (rude) to him.","options":["helped","ask","crying","rude"],"answer":"rude"},{"id":373,"jp":"文句を言ったことを後悔している","template":"I regret (complaining).","options":["situation","interview","complaining","christmas"],"answer":"complaining"},{"id":374,"jp":"ここで食べてはいけない","template":"You're not supposed to (eat) here.","options":["think","nice","like","eat"],"answer":"eat"},{"id":375,"jp":"新しいパソコンがあって嬉しい","template":"I'm happy to have a (new) PC.","options":["file","valid","jobs","new"],"answer":"new"},{"id":376,"jp":"もし彼が10時までに来なかったら?","template":"What if he doesn't (show) up by 10?","options":["ignore","choose","show","can't"],"answer":"show"},{"id":377,"jp":"彼らが理解できないなら謝ります","template":"I apologize if they can't (understand).","options":["participate","understand","documents","computer"],"answer":"understand"},{"id":378,"jp":"ぜひそうしたいけど→できない","template":"I'd love to, but I (can't).","options":["can't","memory","far","disturb"],"answer":"can't"},{"id":379,"jp":"もし失敗したら?","template":"What if we should (fail)?","options":["taxi","got","thing","fail"],"answer":"fail"},{"id":380,"jp":"残念だけど在庫切れだ","template":"I'm afraid it is out of (stock).","options":["stock","office","ticket","parents"],"answer":"stock"},{"id":381,"jp":"予約しなかったことを後悔している","template":"I regret not making a (reservation).","options":["conversation","applications","reservation","apologize"],"answer":"reservation"},{"id":382,"jp":"嬉しそうなのも当然だ→あなたは","template":"No wonder you look (happy).","options":["ask","jill's","happy","choose"],"answer":"happy"},{"id":383,"jp":"パスワードを忘れたかもしれない","template":"I might have forgotten the (password).","options":["something","almost","password","selfish"],"answer":"password"},{"id":384,"jp":"もし明日雨が降ったら?","template":"What if it rains (tomorrow)?","options":["tomorrow","mistakes","anything","listened"],"answer":"tomorrow"},{"id":385,"jp":"あなたのメッセージを読み間違えたかもしれない","template":"I might have misread your (message).","options":["happy","reason","message","dinner"],"answer":"message"},{"id":386,"jp":"残念だけどあまり優しくできなかった→彼女に","template":"I'm afraid I wasn't very (nice) to her.","options":["nice","crazy","catch","result"],"answer":"nice"},{"id":387,"jp":"昨夜遅くまで起きていたに違いない→あなたは","template":"You must have stayed up late last (night).","options":["office","night","bed","coat"],"answer":"night"},{"id":388,"jp":"迷惑をかけているなら謝ります→あなたに","template":"I apologize if I'm (bothering) you.","options":["documents","emotional","college","bothering"],"answer":"bothering"},{"id":389,"jp":"残念だけど状況を完全に読み違えた","template":"I'm afraid I completely misread the (situation).","options":["seconds","charger","situation","spanish"],"answer":"situation"},{"id":390,"jp":"気分を害したなら謝ります→これで","template":"I apologize if you find this (offensive).","options":["offensive","seconds","college","vegetarian"],"answer":"offensive"},{"id":391,"jp":"彼女の言ったことを誤解したに違いない","template":"You must have misunderstood what she (said).","options":["valid","easy","said","math"],"answer":"said"},{"id":392,"jp":"彼と一緒に働けて嬉しい","template":"I'm happy to (work) with him.","options":["fish","listen","buy","work"],"answer":"work"},{"id":393,"jp":"そのことは話さない方がいい","template":"I'd rather not (talk) about it.","options":["golf","guy","blinds","talk"],"answer":"talk"},{"id":394,"jp":"手伝いましょうか","template":"Would you like some (help)?","options":["little","bad","kyoto","help"],"answer":"help"},{"id":395,"jp":"二日酔いなのも当然だ→あなたは","template":"No wonder you've got a (hangover).","options":["hangover","offensive","office","weight"],"answer":"hangover"},{"id":396,"jp":"よくも親の文句を言うな","template":"How dare you complain about your (parents)?","options":["attitude","college","parents","hangover"],"answer":"parents"},{"id":397,"jp":"ぜひそうしたいけど→9時から練習がある","template":"I'd love to, but I have practice from (nine).","options":["today","dare","nine","bad"],"answer":"nine"},{"id":398,"jp":"宿題をすべきだった","template":"I should have done my (homework).","options":["memory","homework","haircut","morning"],"answer":"homework"},{"id":399,"jp":"家にいる方がいい","template":"I'd rather stay at (home).","options":["said","home","movie","ticket"],"answer":"home"},{"id":400,"jp":"残念だけど聞き取れなかった→それを","template":"I'm afraid I didn't (catch) that.","options":["mad","catch","near","kyoto"],"answer":"catch"}]</script>
+
 <script>
-/* ====== ユーティリティ ====== */
 const $ = (s, r=document)=>r.querySelector(s);
 const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
-const sleep = (ms)=>new Promise(res=>setTimeout(res,ms));
-
 const STORAGE_KEY = "eighty_patterns_state_v2";
 
-const defaultSample = [
-  {
-    "id": 9991,
-    "jp": "これらの日本食はすべて中国から来ている。",
-    "template": "All these Japanese foods (came from) China.",
-    "options": ["carried out","handed in","heard of","came from"],
-    "answer": "came from"
-  },
-  {
-    "id": 9992,
-    "jp": "勉強の前に紅茶を飲みます。",
-    "template": "I drink tea (before) studying.",
-    "options": ["before","after","between","during"],
-    "answer": "before"
-  }
-];
-
-let DATA = [];           // 全問題
-let queue = [];          // 出題キュー
-let cur = null;          // 現在の問題
-let idx = 0;             // インデックス
-let answered = false;    // 回答済みフラグ
-let state = {            // 保存用
-  wrongSet: new Set(),   // 苦手ID
-  score: 0,
-  total: 0,
-  streak: 0,
-  seen: new Set(),       // 見たID
-  loadedHash: null       // 読み込んだJSON識別
-};
+let DATA = [];
+let queue = [];
+let cur = null;
+let idx = 0;
+let answered = false;
+let state = {wrongSet:new Set(), score:0, total:0, streak:0, seen:new Set()};
 
 function saveState(){
-  const s = {
-    wrong:Array.from(state.wrongSet),
-    score:state.score, total:state.total, streak:state.streak,
-    seen:Array.from(state.seen),
-    loadedHash:state.loadedHash
-  };
+  const s = {wrong:Array.from(state.wrongSet), score:state.score, total:state.total, streak:state.streak, seen:Array.from(state.seen)};
   localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
 }
 
 function loadState(){
   try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw) return;
+    const raw = localStorage.getItem(STORAGE_KEY); if(!raw) return;
     const s = JSON.parse(raw);
     state.wrongSet = new Set(s.wrong||[]);
     state.score = s.score||0; state.total = s.total||0; state.streak = s.streak||0;
     state.seen = new Set(s.seen||[]);
-    state.loadedHash = s.loadedHash||null;
-  }catch(e){ console.warn(e); }
-}
-
-function hashOf(text){
-  let h=0; for(let i=0;i<text.length;i++){ h = (h*31 + text.charCodeAt(i))|0; }
-  return String(h);
-}
-
-/* ====== データ読み込み ====== */
-async function parseJSONFile(file){
-  const text = await file.text();
-  const json = JSON.parse(text);
-  return json;
+  }catch(e){}
 }
 
 function applyLevelFilter(all){
@@ -245,57 +193,36 @@ function applyLevelFilter(all){
   else if(level==="8") range=[101,210];
   else if(level==="12") range=[211,330];
   else range=[331,400];
-
   return all.filter(x=>typeof x.id==="number" && x.id>=range[0] && x.id<=range[1]);
 }
 
 function applyPool(list){
   const pool = $("#pool").value;
-  if(pool==="wrongs"){
-    return list.filter(x=>state.wrongSet.has(String(x.id)));
-  }
+  if(pool==="wrongs") return list.filter(x=>state.wrongSet.has(String(x.id)));
   return list;
 }
 
 function makeQueue(){
-  const levelLabelMap = {
-    "6":"６歳レベル：001–100",
-    "8":"８歳レベル：101–210",
-    "12":"１２歳レベル：211–330",
-    "teen":"ティーン：331–400"
-  };
+  const levelLabelMap = {"6":"６歳レベル：001–100","8":"８歳レベル：101–210","12":"１２歳レベル：211–330","teen":"ティーン：331–400"};
   $("#levelLabel").textContent = levelLabelMap[$("#level").value];
-
   let base = applyLevelFilter(DATA);
   base = applyPool(base);
-  if(base.length===0){
-    queue = [];
-    renderEmpty();
-    return;
-  }
-  if($("#order").value==="shuffle"){
-    base = base.slice().sort(()=>Math.random()-0.5);
-  }else{
-    base = base.slice().sort((a,b)=>a.id-b.id);
-  }
-  queue = base;
-  idx = 0;
+  if(base.length===0){ queue=[]; renderEmpty(); return; }
+  if($("#order").value==="shuffle") base = base.slice().sort(()=>Math.random()-0.5);
+  else base = base.slice().sort((a,b)=>a.id-b.id);
+  queue = base; idx = 0;
 }
 
 function renderEmpty(){
   $("#counter").textContent = "—";
-  $("#jpText").textContent = "出題対象の問題がありません（JSONを読み込むか、復習リストを確認してください）。";
+  $("#jpText").textContent = "出題対象の問題がありません。";
   $("#stem").innerHTML = '<span class="blank">—</span>';
   $("#choices").innerHTML = "";
   $("#feedback").textContent = "";
 }
 
-/* ====== 出題・表示 ====== */
 function toStem(template){
-  // ()内をブランク表示に置換（複数対応）
-  return template.replace(/\((.+?)\)/g, (_,inside)=>{
-    return '( <span class="blank" data-answer="'+inside.trim()+'">____</span> )';
-  });
+  return (template||"").replace(/\((.+?)\)/g, (_,inside)=>'( <span class="blank" data-answer="'+inside.trim()+'">____</span> )');
 }
 
 function renderQuestion(){
@@ -323,131 +250,66 @@ function renderQuestion(){
 }
 
 function revealAnswer(){
-  const answer = cur.answer?.trim();
-  if(!answer) return;
-  // ハイライト
-  $$(".choice").forEach(c=>{
-    if(c.dataset.op===answer) c.classList.add("correct");
-  });
-  const blank = $(".blank");
-  if(blank) blank.textContent = answer;
+  const answer = cur.answer?.trim(); if(!answer) return;
+  $$(".choice").forEach(c=>{ if(c.dataset.op===answer) c.classList.add("correct"); });
+  const blank = $(".blank"); if(blank) blank.textContent = answer;
   $("#feedback").textContent = `答え：${answer}`;
   $("#feedback").className = "feedback";
 }
 
 function check(selected, btn){
-  if(answered) return;
-  answered = true;
+  if(answered) return; answered = true;
   const answer = (cur.answer||"").trim();
   const isOK = selected.trim() === answer;
   if(isOK){
     btn.classList.add("correct");
-    $("#feedback").textContent = "Good!（正解）";
-    $("#feedback").className = "feedback ok";
+    $("#feedback").textContent = "Good!（正解）"; $("#feedback").className = "feedback ok";
     state.score++; state.total++; state.streak++;
-    // 空欄を埋める
     const blank = $(".blank"); if(blank) blank.textContent = answer;
-    // 正解したら復習から外す
     state.wrongSet.delete(String(cur.id));
   }else{
     btn.classList.add("wrong");
-    $("#feedback").textContent = "Oops…（不正解）";
-    $("#feedback").className = "feedback ng";
+    $("#feedback").textContent = "Oops…（不正解）"; $("#feedback").className = "feedback ng";
     state.total++; state.streak=0;
     state.wrongSet.add(String(cur.id));
-    // 正解も表示
-    $$(".choice").forEach(c=>{
-      if(c.dataset.op===answer) c.classList.add("correct");
-    });
+    $$(".choice").forEach(c=>{ if(c.dataset.op===answer) c.classList.add("correct"); });
     const blank = $(".blank"); if(blank) blank.textContent = answer;
   }
   saveState();
   updateBars();
 }
 
-function next(){
-  if(queue.length===0) return;
-  idx = (idx+1) % queue.length;
-  renderQuestion();
-}
-
-function addToReview(){
-  if(!cur) return;
-  state.wrongSet.add(String(cur.id));
-  saveState();
-  $("#feedback").textContent = "復習リストに追加しました。";
-  $("#feedback").className = "feedback";
-}
-
+function next(){ if(queue.length===0) return; idx = (idx+1) % queue.length; renderQuestion(); }
+function addToReview(){ if(!cur) return; state.wrongSet.add(String(cur.id)); saveState(); $("#feedback").textContent = "復習リストに追加しました。"; $("#feedback").className = "feedback"; }
 function updateBars(){
-  const seen = state.total;
-  const ok = state.score;
-  const pct = seen ? Math.round(ok/seen*100) : 0;
+  const seen = state.total; const ok = state.score; const pct = seen ? Math.round(ok/seen*100) : 0;
   $("#scoreText").textContent = `Score ${ok} / ${seen}（${pct}%）`;
   $("#streakText").textContent = `Streak ${state.streak}`;
   const progress = queue.length ? ((idx+1)/queue.length*100) : 0;
   $("#progressBar").style.width = progress + "%";
 }
 
-/* ====== イベント ====== */
 $("#nextBtn").addEventListener("click", next);
 $("#reviewBtn").addEventListener("click", addToReview);
 $("#showBtn").addEventListener("click", revealAnswer);
 $("#order").addEventListener("change", ()=>{ makeQueue(); renderQuestion(); });
 $("#level").addEventListener("change", ()=>{ makeQueue(); renderQuestion(); });
 $("#pool").addEventListener("change", ()=>{ makeQueue(); renderQuestion(); });
-
 document.addEventListener("keydown",(e)=>{
   if(["1","2","3","4"].includes(e.key)){
-    const i = Number(e.key)-1;
-    const btn = $$(".choice")[i];
-    if(btn) btn.click();
+    const i = Number(e.key)-1; const btn = $$(".choice")[i]; if(btn) btn.click();
   }else if(e.key==="n"||e.key==="N"){ $("#nextBtn").click(); }
   else if(e.key==="r"||e.key==="R"){ addToReview(); }
 });
 
-$("#resetBtn").addEventListener("click", ()=>{
-  if(confirm("スコア・復習リスト・既読を削除します。よろしいですか？")){
-    localStorage.removeItem(STORAGE_KEY);
-    state={wrongSet:new Set(),score:0,total:0,streak:0,seen:new Set(),loadedHash:null};
-    makeQueue(); renderQuestion();
-  }
-});
-
-$("#loadBtn").addEventListener("click", async ()=>{
-  const f = $("#file").files?.[0];
-  if(!f){ alert("JSONファイルを選んでください。"); return; }
-  try{
-    const json = await parseJSONFile(f);
-    // 形式チェック
-    if(!Array.isArray(json)) throw new Error("JSONは配列ではありません。");
-    DATA = json;
-    state.loadedHash = hashOf(JSON.stringify(json.slice(0,20)));
-    saveState();
-    makeQueue(); renderQuestion();
-    $("#feedback").textContent = `読み込み成功：${DATA.length} 問`;
-  }catch(err){
-    console.error(err);
-    alert("JSONの読み込みに失敗しました。形式を確認してください。");
-  }
-});
-
-// ドロップ読み込み
-const filePill = $("#filePill");
-filePill.addEventListener("dragover", e=>{ e.preventDefault(); filePill.style.boxShadow="0 0 0 3px #60a5fa66"; });
-filePill.addEventListener("dragleave", e=>{ filePill.style.boxShadow="none"; });
-filePill.addEventListener("drop", async e=>{
-  e.preventDefault(); filePill.style.boxShadow="none";
-  const f = e.dataTransfer.files?.[0]; if(!f) return;
-  $("#file").files = e.dataTransfer.files;
-  $("#loadBtn").click();
-});
-
-/* ====== 起動 ====== */
-(async function init(){
+(function init(){
   loadState();
-  // まずはサンプル（2問）で起動。JSON読み込み後に置き換え。
-  DATA = defaultSample;
+  try {
+    const raw = document.getElementById("EMBEDDED_DATA").textContent;
+    DATA = JSON.parse(raw);
+  } catch (e) {
+    DATA = [];
+  }
   makeQueue(); renderQuestion();
 })();
 </script>
