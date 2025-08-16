@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ネイティブなら12歳までに覚える 80パターンで英語が止まらない</title>
+<style>
+  :root{
+    --cream:#F8F4E6;
+    --ink:#1f2937;
+    --muted:#6b7280;
+    --brand:#f97316;      /* オレンジ */
+    --ok:#16a34a;         /* 正解 */
+    --ng:#dc2626;         /* 不正解 */
+    --card:#ffffffcc;
+    --radius:18px;
+  }
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--cream); color:var(--ink);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    line-height:1.5;
+    display:flex; flex-direction:column;
+  }
+  header{
+    background:linear-gradient(0deg, #ffedd5, #ffe7c7);
+    border-bottom:1px solid #f5d2a8;
+    padding:10px 16px; position:sticky; top:0; z-index:50;
+    display:grid; gap:8px;
+  }
+  header .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  h1{font-size:clamp(16px, 2.4vw, 20px); margin:0; font-weight:700;}
+  .pill{
+    display:inline-flex; align-items:center; gap:8px; padding:8px 12px;
+    border-radius:999px; background:#fff; border:1px solid #e5e7eb; color:#374151;
+  }
+  select, button, input[type="file"]{
+    font:inherit; border-radius:999px; border:1px solid #e5e7eb; padding:8px 12px; background:#fff;
+  }
+  button{cursor:pointer}
+  button.primary{background:var(--brand); color:#fff; border-color:#fb923c}
+  button.ghost{background:transparent}
+  button:disabled{opacity:.5; cursor:not-allowed}
+  main{max-width:900px; width:100%; margin:14px auto; padding:0 14px; flex:1; display:grid; gap:14px;}
+  .card{
+    background:var(--card); backdrop-filter:saturate(1.2) blur(3px);
+    border:1px solid #e5e7eb; border-radius:var(--radius); padding:16px;
+    box-shadow:0 10px 24px rgba(0,0,0,.06);
+  }
+  .questionHeader{display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px}
+  .levelTag{font-weight:700; color:#9a3412}
+  .jp{color:var(--muted); margin-top:6px}
+  .stem{
+    font-size:clamp(18px, 3.4vw, 26px);
+    padding:14px 0; border-top:1px dashed #e5e7eb; border-bottom:1px dashed #e5e7eb;
+  }
+  .blank{display:inline-block; min-width:6ch; border-bottom:2px solid #111827; text-align:center; padding:0 4px}
+  .choices{display:grid; gap:12px; grid-template-columns:repeat(2, minmax(0,1fr)); margin-top:12px}
+  .choice{
+    background:#fff; border:2px solid #e5e7eb; border-radius:14px; padding:14px 12px; text-align:center;
+    font-weight:700; font-size:clamp(16px, 2.4vw, 22px);
+    transition:transform .05s ease, border-color .15s ease, box-shadow .15s ease;
+    user-select:none;
+  }
+  .choice:focus-visible{outline:3px solid #60a5fa}
+  .choice:hover{transform:translateY(-1px)}
+  .choice.correct{border-color:var(--ok); box-shadow:0 0 0 3px #16a34a22}
+  .choice.wrong{border-color:var(--ng); box-shadow:0 0 0 3px #dc262622}
+  .feedback{min-height:24px; font-weight:700; margin-top:6px}
+  .feedback.ok{color:var(--ok)}
+  .feedback.ng{color:var(--ng)}
+  .toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-top:6px}
+  .score{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+  .progressWrap{flex:1; height:10px; background:#f3f4f6; border-radius:999px; overflow:hidden}
+  .progressBar{height:100%; width:0%; background:linear-gradient(90deg, #fb923c, #f97316)}
+  .tiny{font-size:12px; color:#6b7280}
+  .kbd{font-variant-numeric:tabular-nums; background:#111827; color:#fff; padding:2px 6px; border-radius:6px; font-size:12px}
+  .footerNote{color:#6b7280; text-align:center; margin:14px 0}
+  @media (max-width:640px){
+    .choices{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="row" aria-label="app-title">
+      <h1>ネイティブなら12歳までに覚える 80パターンで英語が止まらない</h1>
+    </div>
+    <div class="row">
+      <span class="pill">
+        レベル:
+        <select id="level">
+          <option value="6">６歳レベル（001–100）</option>
+          <option value="8">８歳レベル（101–210）</option>
+          <option value="12">１２歳レベル（211–330）</option>
+          <option value="teen">ティーン（331–400）</option>
+        </select>
+      </span>
+      <span class="pill">
+        出題順:
+        <select id="order">
+          <option value="sequential">順番どおり</option>
+          <option value="shuffle">シャッフル</option>
+        </select>
+      </span>
+      <span class="pill">
+        出題対象:
+        <select id="pool">
+          <option value="all">通常（全問題）</option>
+          <option value="wrongs">復習（まちがえた問題のみ）</option>
+        </select>
+      </span>
+      <span class="pill" id="filePill">
+        例文JSON:
+        <input id="file" type="file" accept=".json" />
+        <button class="primary" id="loadBtn" title="JSONを読み込み">読み込み</button>
+      </span>
+      <button class="ghost" id="resetBtn" title="保存データを初期化">進捗リセット</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" id="qCard" aria-live="polite">
+      <div class="questionHeader">
+        <div>
+          <div><strong id="counter">1 / 10</strong> <span class="levelTag" id="levelLabel"></span></div>
+          <div class="jp" id="jpText">日本語訳がここに表示されます</div>
+        </div>
+        <div class="tiny">ショートカット：<span class="kbd">1–4</span> 選択 / <span class="kbd">N</span> 次へ / <span class="kbd">R</span> 復習</div>
+      </div>
+
+      <div class="stem" id="stem">All these Japanese foods ( <span class="blank">____</span> ) China.</div>
+
+      <div class="choices" id="choices" role="group" aria-label="choices"></div>
+
+      <div class="feedback" id="feedback" aria-live="assertive"></div>
+
+      <div class="toolbar">
+        <div class="score">
+          <div class="progressWrap" title="進捗">
+            <div class="progressBar" id="progressBar"></div>
+          </div>
+          <div id="scoreText" class="pill">Score 0 / 0（0%）</div>
+          <div id="streakText" class="pill">Streak 0</div>
+        </div>
+        <div class="actions">
+          <button id="nextBtn" class="primary">次へ（N）</button>
+          <button id="reviewBtn">復習に追加（R）</button>
+          <button id="showBtn">答えを見る</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card tiny">
+      <details>
+        <summary>使い方（かんたん）</summary>
+        <ul>
+          <li>上の<span class="pill">例文JSON</span>から、<strong>eighty_patterns_001-400.json</strong>を読み込み。</li>
+          <li>レベル・出題順・出題対象を選び、問題に答えます。</li>
+          <li>間違えたら「復習に追加」でリスト化。<strong>出題対象：復習</strong>に切り替えると苦手だけ出題。</li>
+          <li>スコアや復習リストは<strong>自動保存</strong>（ブラウザのローカル）。「進捗リセット」で初期化。</li>
+        </ul>
+      </details>
+    </section>
+    <div class="footerNote">© 学習用。UIはPC/タブレット/スマホで見やすく調整済み。</div>
+  </main>
+
+<script>
+/* ====== ユーティリティ ====== */
+const $ = (s, r=document)=>r.querySelector(s);
+const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
+const sleep = (ms)=>new Promise(res=>setTimeout(res,ms));
+
+const STORAGE_KEY = "eighty_patterns_state_v2";
+
+const defaultSample = [
+  {
+    "id": 9991,
+    "jp": "これらの日本食はすべて中国から来ている。",
+    "template": "All these Japanese foods (came from) China.",
+    "options": ["carried out","handed in","heard of","came from"],
+    "answer": "came from"
+  },
+  {
+    "id": 9992,
+    "jp": "勉強の前に紅茶を飲みます。",
+    "template": "I drink tea (before) studying.",
+    "options": ["before","after","between","during"],
+    "answer": "before"
+  }
+];
+
+let DATA = [];           // 全問題
+let queue = [];          // 出題キュー
+let cur = null;          // 現在の問題
+let idx = 0;             // インデックス
+let answered = false;    // 回答済みフラグ
+let state = {            // 保存用
+  wrongSet: new Set(),   // 苦手ID
+  score: 0,
+  total: 0,
+  streak: 0,
+  seen: new Set(),       // 見たID
+  loadedHash: null       // 読み込んだJSON識別
+};
+
+function saveState(){
+  const s = {
+    wrong:Array.from(state.wrongSet),
+    score:state.score, total:state.total, streak:state.streak,
+    seen:Array.from(state.seen),
+    loadedHash:state.loadedHash
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const s = JSON.parse(raw);
+    state.wrongSet = new Set(s.wrong||[]);
+    state.score = s.score||0; state.total = s.total||0; state.streak = s.streak||0;
+    state.seen = new Set(s.seen||[]);
+    state.loadedHash = s.loadedHash||null;
+  }catch(e){ console.warn(e); }
+}
+
+function hashOf(text){
+  let h=0; for(let i=0;i<text.length;i++){ h = (h*31 + text.charCodeAt(i))|0; }
+  return String(h);
+}
+
+/* ====== データ読み込み ====== */
+async function parseJSONFile(file){
+  const text = await file.text();
+  const json = JSON.parse(text);
+  return json;
+}
+
+function applyLevelFilter(all){
+  const level = $("#level").value;
+  let range=[1,100];
+  if(level==="6") range=[1,100];
+  else if(level==="8") range=[101,210];
+  else if(level==="12") range=[211,330];
+  else range=[331,400];
+
+  return all.filter(x=>typeof x.id==="number" && x.id>=range[0] && x.id<=range[1]);
+}
+
+function applyPool(list){
+  const pool = $("#pool").value;
+  if(pool==="wrongs"){
+    return list.filter(x=>state.wrongSet.has(String(x.id)));
+  }
+  return list;
+}
+
+function makeQueue(){
+  const levelLabelMap = {
+    "6":"６歳レベル：001–100",
+    "8":"８歳レベル：101–210",
+    "12":"１２歳レベル：211–330",
+    "teen":"ティーン：331–400"
+  };
+  $("#levelLabel").textContent = levelLabelMap[$("#level").value];
+
+  let base = applyLevelFilter(DATA);
+  base = applyPool(base);
+  if(base.length===0){
+    queue = [];
+    renderEmpty();
+    return;
+  }
+  if($("#order").value==="shuffle"){
+    base = base.slice().sort(()=>Math.random()-0.5);
+  }else{
+    base = base.slice().sort((a,b)=>a.id-b.id);
+  }
+  queue = base;
+  idx = 0;
+}
+
+function renderEmpty(){
+  $("#counter").textContent = "—";
+  $("#jpText").textContent = "出題対象の問題がありません（JSONを読み込むか、復習リストを確認してください）。";
+  $("#stem").innerHTML = '<span class="blank">—</span>';
+  $("#choices").innerHTML = "";
+  $("#feedback").textContent = "";
+}
+
+/* ====== 出題・表示 ====== */
+function toStem(template){
+  // ()内をブランク表示に置換（複数対応）
+  return template.replace(/\((.+?)\)/g, (_,inside)=>{
+    return '( <span class="blank" data-answer="'+inside.trim()+'">____</span> )';
+  });
+}
+
+function renderQuestion(){
+  if(queue.length===0){ renderEmpty(); return; }
+  cur = queue[idx];
+  $("#counter").textContent = `${idx+1} / ${queue.length}`;
+  $("#jpText").textContent = cur.jp || "";
+  $("#stem").innerHTML = toStem(cur.template || "");
+  const opts = (cur.options||[]).slice(0,4);
+  const wrap = $("#choices"); wrap.innerHTML="";
+  opts.forEach((op,i)=>{
+    const btn = document.createElement("button");
+    btn.className = "choice";
+    btn.setAttribute("data-op", op);
+    btn.innerHTML = op;
+    btn.addEventListener("click", ()=>check(op, btn));
+    btn.tabIndex = 0;
+    wrap.appendChild(btn);
+  });
+  $("#feedback").textContent = "";
+  answered = false;
+  updateBars();
+  state.seen.add(String(cur.id));
+  saveState();
+}
+
+function revealAnswer(){
+  const answer = cur.answer?.trim();
+  if(!answer) return;
+  // ハイライト
+  $$(".choice").forEach(c=>{
+    if(c.dataset.op===answer) c.classList.add("correct");
+  });
+  const blank = $(".blank");
+  if(blank) blank.textContent = answer;
+  $("#feedback").textContent = `答え：${answer}`;
+  $("#feedback").className = "feedback";
+}
+
+function check(selected, btn){
+  if(answered) return;
+  answered = true;
+  const answer = (cur.answer||"").trim();
+  const isOK = selected.trim() === answer;
+  if(isOK){
+    btn.classList.add("correct");
+    $("#feedback").textContent = "Good!（正解）";
+    $("#feedback").className = "feedback ok";
+    state.score++; state.total++; state.streak++;
+    // 空欄を埋める
+    const blank = $(".blank"); if(blank) blank.textContent = answer;
+    // 正解したら復習から外す
+    state.wrongSet.delete(String(cur.id));
+  }else{
+    btn.classList.add("wrong");
+    $("#feedback").textContent = "Oops…（不正解）";
+    $("#feedback").className = "feedback ng";
+    state.total++; state.streak=0;
+    state.wrongSet.add(String(cur.id));
+    // 正解も表示
+    $$(".choice").forEach(c=>{
+      if(c.dataset.op===answer) c.classList.add("correct");
+    });
+    const blank = $(".blank"); if(blank) blank.textContent = answer;
+  }
+  saveState();
+  updateBars();
+}
+
+function next(){
+  if(queue.length===0) return;
+  idx = (idx+1) % queue.length;
+  renderQuestion();
+}
+
+function addToReview(){
+  if(!cur) return;
+  state.wrongSet.add(String(cur.id));
+  saveState();
+  $("#feedback").textContent = "復習リストに追加しました。";
+  $("#feedback").className = "feedback";
+}
+
+function updateBars(){
+  const seen = state.total;
+  const ok = state.score;
+  const pct = seen ? Math.round(ok/seen*100) : 0;
+  $("#scoreText").textContent = `Score ${ok} / ${seen}（${pct}%）`;
+  $("#streakText").textContent = `Streak ${state.streak}`;
+  const progress = queue.length ? ((idx+1)/queue.length*100) : 0;
+  $("#progressBar").style.width = progress + "%";
+}
+
+/* ====== イベント ====== */
+$("#nextBtn").addEventListener("click", next);
+$("#reviewBtn").addEventListener("click", addToReview);
+$("#showBtn").addEventListener("click", revealAnswer);
+$("#order").addEventListener("change", ()=>{ makeQueue(); renderQuestion(); });
+$("#level").addEventListener("change", ()=>{ makeQueue(); renderQuestion(); });
+$("#pool").addEventListener("change", ()=>{ makeQueue(); renderQuestion(); });
+
+document.addEventListener("keydown",(e)=>{
+  if(["1","2","3","4"].includes(e.key)){
+    const i = Number(e.key)-1;
+    const btn = $$(".choice")[i];
+    if(btn) btn.click();
+  }else if(e.key==="n"||e.key==="N"){ $("#nextBtn").click(); }
+  else if(e.key==="r"||e.key==="R"){ addToReview(); }
+});
+
+$("#resetBtn").addEventListener("click", ()=>{
+  if(confirm("スコア・復習リスト・既読を削除します。よろしいですか？")){
+    localStorage.removeItem(STORAGE_KEY);
+    state={wrongSet:new Set(),score:0,total:0,streak:0,seen:new Set(),loadedHash:null};
+    makeQueue(); renderQuestion();
+  }
+});
+
+$("#loadBtn").addEventListener("click", async ()=>{
+  const f = $("#file").files?.[0];
+  if(!f){ alert("JSONファイルを選んでください。"); return; }
+  try{
+    const json = await parseJSONFile(f);
+    // 形式チェック
+    if(!Array.isArray(json)) throw new Error("JSONは配列ではありません。");
+    DATA = json;
+    state.loadedHash = hashOf(JSON.stringify(json.slice(0,20)));
+    saveState();
+    makeQueue(); renderQuestion();
+    $("#feedback").textContent = `読み込み成功：${DATA.length} 問`;
+  }catch(err){
+    console.error(err);
+    alert("JSONの読み込みに失敗しました。形式を確認してください。");
+  }
+});
+
+// ドロップ読み込み
+const filePill = $("#filePill");
+filePill.addEventListener("dragover", e=>{ e.preventDefault(); filePill.style.boxShadow="0 0 0 3px #60a5fa66"; });
+filePill.addEventListener("dragleave", e=>{ filePill.style.boxShadow="none"; });
+filePill.addEventListener("drop", async e=>{
+  e.preventDefault(); filePill.style.boxShadow="none";
+  const f = e.dataTransfer.files?.[0]; if(!f) return;
+  $("#file").files = e.dataTransfer.files;
+  $("#loadBtn").click();
+});
+
+/* ====== 起動 ====== */
+(async function init(){
+  loadState();
+  // まずはサンプル（2問）で起動。JSON読み込み後に置き換え。
+  DATA = defaultSample;
+  makeQueue(); renderQuestion();
+})();
+</script>
+</body>
+</html>
