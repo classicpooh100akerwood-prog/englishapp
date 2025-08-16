@@ -19,7 +19,7 @@
   button:disabled{opacity:.5;pointer-events:none}
   .card{background:var(--card);border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:16px}
   .meta{display:flex;align-items:baseline;gap:10px;color:var(--muted);font-size:14px;margin-bottom:6px}
-  .q-ja{color:#c2185b;margin:8px 0 2px;font-size:22px;line-height:1.35} /* 日本語訳を英語と同じサイズに */
+  .q-ja{color:#c2185b;margin:8px 0 2px;font-size:22px}
   .q-en{font-size:22px;line-height:1.35;margin:8px 0 12px}
   .blank{border-bottom:3px solid #333; padding:0 2px}
   .choices{display:grid;gap:10px;margin-top:8px}
@@ -29,7 +29,7 @@
   .choice.wrong{border-color:var(--ng);box-shadow:0 0 0 3px rgba(198,40,40,.1)}
   .feedback{margin-top:10px;font-weight:700}
   .feedback.ok{color:var(--ok)} .feedback.ng{color:var(--ng)}
-  .footerBtns{margin-top:14px;display:grid;gap:10px;grid-template-columns:1fr}
+  .footerBtns{margin-top:14px;display:grid;gap:10px;grid-template-columns:1fr 1fr}
   .scorebar{display:flex;gap:10px;align-items:center;margin:10px 0 0}
   .bar{height:10px;background:#eee;border-radius:999px;flex:1;overflow:hidden}
   .bar>span{display:block;height:100%;background:var(--ok);width:0%}
@@ -42,7 +42,7 @@
 <header>
   <div>
     <h1>毎日つぶやく独り言英語 <small>Pattern Practice / 4択クイズ</small></h1>
-    <small>学習レベル：1日目〜30日目（主題で選択）</small>
+    <small>学習レベル：1日目〜30日目（主題で選択）｜英国英語の音声つき（ゆっくり）</small>
   </div>
 </header>
 
@@ -68,6 +68,7 @@
     <div id="feedback" class="feedback" role="status"></div>
 
     <div class="footerBtns">
+      <button id="speakBtn" class="ghost" title="英国英語で読み上げ">🔈 英文を音声で</button>
       <button id="nextBtn" class="primary" title="次の問題へ">次へ ▶︎</button>
     </div>
 
@@ -76,22 +77,327 @@
       <div class="small" id="progressText">0 / 0</div>
     </div>
   </div>
+
+  <div class="card" style="margin-top:14px">
+    <details>
+      <summary>使い方・データ追加（クリックで開く）</summary>
+      <ul class="list">
+        <li>各例文は <b>id</b>（001 など）で管理。成績と誤答は端末に保存（localStorage）。</li>
+        <li>空欄は <code>_____</code> を入れたい部分に置いてあります。</li>
+        <li>4択は同日の他語から自動生成。必要なら手動で <code>options</code> を追加可。</li>
+        <li>英国英語でゆっくり音声：速度 0.85。</li>
+      </ul>
+    </details>
+  </div>
 </div>
 
 <script>
-/* ========= ① 学習データ ========= */
+/* ========= ① 学習データ（Day 1〜30のうち既定分＋Day12を追加） ========= */
 const DATASET = [
   { day:1, theme:"体や心の状態をつぶやく", phrase:"I’m so ～（～だなぁ）",
     items:[
       {id:"001",en:"I'm so _____.",answer:"thirsty",ja:"喉が渇いたなぁ。"},
       {id:"002",en:"I'm so _____.",answer:"sleepy",ja:"眠いなぁ。"},
-      {id:"003",en:"I'm so _____.",answer:"busy",ja:"忙しいなぁ。"}
+      {id:"003",en:"I'm so _____.",answer:"busy",ja:"忙しいなぁ。"},
+      {id:"004",en:"I'm so _____.",answer:"nervous",ja:"緊張するなぁ。"},
+      {id:"005",en:"I'm so _____.",answer:"lonely",ja:"寂しいなぁ。"},
+      {id:"006",en:"I'm so _____.",answer:"happy",ja:"うれしいなぁ。"},
+      {id:"007",en:"I'm so _____.",answer:"sad",ja:"悲しいなぁ。"},
+      {id:"008",en:"I'm so _____.",answer:"angry",ja:"腹立つなぁ。"},
+      {id:"009",en:"I'm so _____.",answer:"lucky",ja:"ついているなぁ。"},
+      {id:"010",en:"I'm so _____.",answer:"tired",ja:"疲れたなぁ。"},
+      {id:"011",en:"I'm so _____.",answer:"hungry",ja:"お腹が空いたなぁ。"},
+      {id:"012",en:"I'm so _____.",answer:"full",ja:"お腹いっぱいだなぁ。"},
+      {id:"013",en:"I'm so _____.",answer:"thirsty",ja:"喉がカラカラだなぁ。"},
+      {id:"014",en:"I'm so _____.",answer:"sleepy",ja:"眠くてたまらないなぁ。"},
+      {id:"015",en:"I'm so _____.",answer:"cold",ja:"寒いなぁ。"},
+      {id:"016",en:"I'm so _____.",answer:"hot",ja:"暑いなぁ。"},
+      {id:"017",en:"I'm so _____.",answer:"shocked",ja:"ショックだなぁ。"},
+      {id:"018",en:"I'm so _____.",answer:"exhausted",ja:"もうくたくた。"},
+      {id:"019",en:"I'm so _____.",answer:"bored",ja:"退屈だなぁ。"},
+      {id:"020",en:"I'm so _____.",answer:"excited",ja:"わくわくするなぁ。"},
+      {id:"021",en:"I'm so _____.",answer:"embarrassed",ja:"恥ずかしいなぁ。"},
+      {id:"022",en:"I'm so _____.",answer:"confused",ja:"わけがわからないなぁ。"},
+      {id:"023",en:"I'm so _____.",answer:"disappointed",ja:"がっかりだなぁ。"},
     ]},
+
   { day:2, theme:"人の性格・性質をつぶやく", phrase:"You’re so ～（あなたは～だなぁ）",
     items:[
       {id:"001",en:"You're so _____.",answer:"smart",ja:"あなたは頭がいいなあ。"},
-      {id:"002",en:"You're so _____.",answer:"nice",ja:"あなたは優しいなあ。"}
-    ]}
+      {id:"002",en:"You're so _____.",answer:"nice",ja:"あなたは優しいなあ。"},
+      {id:"003",en:"You're so _____.",answer:"beautiful",ja:"あなたは美しいなあ。"},
+      {id:"004",en:"You're so _____.",answer:"handsome",ja:"あなたはハンサムだなあ。"},
+      {id:"005",en:"You're so _____.",answer:"cute",ja:"あなたはかわいいなあ。"},
+      {id:"006",en:"You're so _____.",answer:"funny",ja:"あなたはおもしろいなあ。"},
+      {id:"007",en:"You're so _____.",answer:"kind",ja:"あなたは親切だなあ。"},
+      {id:"008",en:"You're so _____.",answer:"patient",ja:"あなたは辛抱強いなあ。"},
+      {id:"009",en:"You're so _____.",answer:"honest",ja:"あなたは正直だなあ。"},
+      {id:"010",en:"You're so _____.",answer:"reliable",ja:"あなたは頼りになるなあ。"},
+      {id:"011",en:"You're so _____.",answer:"friendly",ja:"あなたは人なつっこいなあ。"},
+      {id:"012",en:"You're so _____.",answer:"generous",ja:"あなたは気前がいいなあ。"},
+      {id:"013",en:"You're so _____.",answer:"polite",ja:"あなたは礼儀正しいなあ。"},
+      {id:"014",en:"You're so _____.",answer:"energetic",ja:"あなたは元気だなあ。"},
+      {id:"015",en:"You're so _____.",answer:"positive",ja:"あなたは前向きだなあ。"},
+      {id:"016",en:"You're so _____.",answer:"creative",ja:"あなたは創造的だなあ。"},
+      {id:"017",en:"You're so _____.",answer:"serious",ja:"あなたは真面目だなあ。"},
+      {id:"018",en:"You're so _____.",answer:"shy",ja:"あなたは恥ずかしがり屋だなあ。"},
+      {id:"019",en:"You're so _____.",answer:"talkative",ja:"あなたはおしゃべりだなあ。"},
+      {id:"020",en:"You're so _____.",answer:"quiet",ja:"あなたは無口だなあ。"},
+      {id:"021",en:"You're so _____.",answer:"lazy",ja:"あなたは怠け者だなあ。"},
+    ]},
+
+  { day:3, theme:"曜日・時間やその日の状況をつぶやく", phrase:"It’s～",
+    items:[
+      {id:"001",en:"It's _____.",answer:"payday at last",ja:"やっと給料日だ。"},
+      {id:"002",en:"It's _____.",answer:"Sunday at last",ja:"やっと日曜日だ。"},
+      {id:"003",en:"It's _____.",answer:"still Wednesday",ja:"まだ水曜日か。"},
+      {id:"004",en:"It's _____.",answer:"already Friday",ja:"もう金曜日か。"},
+      {id:"005",en:"It's _____.",answer:"the beginning of the week",ja:"週の始めだ。"},
+      {id:"006",en:"It's _____.",answer:"the end of the month",ja:"月末だ。"},
+      {id:"007",en:"It's _____.",answer:"a national holiday",ja:"祝日だ。"},
+      {id:"008",en:"It's _____.",answer:"the rush hour",ja:"ラッシュの時間だ。"},
+      {id:"009",en:"It's _____?",answer:"about two o'clock",ja:"2時くらいかな。"},
+      {id:"010",en:"It's _____?",answer:"just after two",ja:"2時ちょっと過ぎか。"},
+      {id:"011",en:"It's _____.",answer:"still half past three",ja:"まだ3時半か。"},
+      {id:"012",en:"It's _____.",answer:"almost four",ja:"もうすぐ4時だ。"},
+      {id:"013",en:"It's _____.",answer:"time for lunch",ja:"お昼の時間だ。"},
+      {id:"014",en:"It's _____.",answer:"sunny today",ja:"今日は晴れ。"},
+      {id:"015",en:"It's _____.",answer:"cloudy today",ja:"今日はくもり。"},
+      {id:"016",en:"It's _____.",answer:"rainy today",ja:"今日は雨。"},
+      {id:"017",en:"It's _____.",answer:"snowy today",ja:"今日は雪。"},
+      {id:"018",en:"It's _____.",answer:"windy today",ja:"今日は風が強い。"},
+    ]},
+
+  { day:4, theme:"目の前のものについてつぶやく", phrase:"This is～.",
+    items:[
+      {id:"001",en:"This is _____.",answer:"delicious",ja:"これとても美味しい。"},
+      {id:"002",en:"This is _____.",answer:"sour",ja:"これ酸っぱい。"},
+      {id:"003",en:"This is _____.",answer:"salty",ja:"これしょっぱい。"},
+      {id:"004",en:"This is _____.",answer:"spicy",ja:"これ辛い。"},
+      {id:"005",en:"This is _____.",answer:"sweet",ja:"これ甘い。"},
+      {id:"006",en:"This is _____.",answer:"bitter",ja:"これ苦い。"},
+      {id:"007",en:"This is _____.",answer:"hot",ja:"これ熱い。"},
+      {id:"008",en:"This is _____.",answer:"cold",ja:"これ冷たい。"},
+      {id:"009",en:"This is _____.",answer:"fresh",ja:"これ新鮮。"},
+      {id:"010",en:"This is _____.",answer:"stale",ja:"これ古い。"},
+      {id:"011",en:"This is _____.",answer:"cheap",ja:"これ安い。"},
+      {id:"012",en:"This is _____.",answer:"expensive",ja:"これ高い。"},
+      {id:"013",en:"This is _____.",answer:"cute",ja:"これ可愛い。"},
+      {id:"014",en:"This is _____.",answer:"beautiful",ja:"これ美しい。"},
+      {id:"015",en:"This is _____.",answer:"heavy",ja:"これ重い。"},
+      {id:"016",en:"This is _____.",answer:"light",ja:"これ軽い。"},
+      {id:"017",en:"This is _____.",answer:"strong",ja:"このコーヒー濃い。"},
+      {id:"018",en:"This is _____.",answer:"weak",ja:"この紅茶薄い。"},
+    ]},
+
+  { day:5, theme:"今行われていることをつぶやく", phrase:"I’m playing～now",
+    items:[ {id:"001",en:"I'm playing _____ now.",answer:"in the yard",ja:"今庭で遊んでる。"} ]},
+
+  { day:6, theme:"あるものをつぶやく", phrase:"There’s a～over there.",
+    items:[
+      {id:"001",en:"There's a _____ over there.",answer:"restroom",ja:"あっちにトイレがある。"},
+      {id:"002",en:"There's a _____ over there.",answer:"bus stop",ja:"あっちにバス停がある。"},
+      {id:"003",en:"There's a _____ over there.",answer:"taxi stand",ja:"あっちにタクシー乗り場がある。"},
+      {id:"004",en:"There's a _____ over there.",answer:"police box",ja:"あっちに交番がある。"},
+      {id:"005",en:"There's a _____ over there.",answer:"bank",ja:"あっちに銀行がある。"},
+      {id:"006",en:"There's a _____ over there.",answer:"post office",ja:"あっちに郵便局がある。"},
+      {id:"007",en:"There's a _____ over there.",answer:"toilet",ja:"あっちにトイレがある。"},
+      {id:"008",en:"There's a _____ today.",answer:"big sale",ja:"今日、大セールがある。"},
+      {id:"009",en:"There's a _____ today.",answer:"meeting",ja:"今日は会議がある。"},
+      {id:"010",en:"There's a lot to do today.",answer:"lot to do",ja:"今日はすることがたくさんある。"},
+    ]},
+
+  { day:7, theme:"場所についてつぶやく", phrase:"Where’s the～?",
+    items:[
+      {id:"001",en:"Where's the _____?",answer:"toilet",ja:"トイレはどこ？"},
+      {id:"002",en:"Where's the _____?",answer:"exit",ja:"出口はどこ？"},
+      {id:"003",en:"Where's the _____?",answer:"entrance",ja:"入口はどこ？"},
+      {id:"004",en:"Where's the _____?",answer:"stairs",ja:"階段はどこ？"},
+      {id:"005",en:"Where's the _____?",answer:"lift",ja:"エレベーターはどこ？"},
+      {id:"006",en:"Where's the _____?",answer:"escalator",ja:"エスカレーターはどこ？"},
+      {id:"007",en:"Where's the _____?",answer:"information desk",ja:"案内所はどこ？"},
+      {id:"008",en:"Where's the _____?",answer:"ticket machine",ja:"券売機はどこ？"},
+      {id:"009",en:"Where's the _____?",answer:"platform 1",ja:"1番線はどこ？"},
+      {id:"010",en:"Where's the nearest _____?",answer:"station",ja:"一番近い駅はどこ？"},
+      {id:"011",en:"Where's the nearest _____?",answer:"bus stop",ja:"一番近いバス停はどこ？"},
+      {id:"012",en:"Where's the nearest _____?",answer:"supermarket",ja:"一番近いスーパーはどこ？"},
+      {id:"013",en:"Where's the _____?",answer:"ATM",ja:"ATMはどこ？"},
+      {id:"014",en:"Where's the _____?",answer:"pharmacy",ja:"薬局はどこ？"},
+      {id:"015",en:"Where's the _____?",answer:"hospital",ja:"病院はどこ？"},
+      {id:"016",en:"Where's the _____?",answer:"taxi rank",ja:"タクシー乗り場はどこ？"},
+    ]},
+
+  { day:8, theme:"中身・内容に関する疑問をつぶやく", phrase:"What’s the～?",
+    items:[
+      {id:"001",en:"What's the _____?",answer:"time now",ja:"今、何時？"},
+      {id:"002",en:"What's the _____?",answer:"temperature",ja:"気温は何度？"},
+      {id:"003",en:"What's the _____?",answer:"problem",ja:"問題は何？"},
+      {id:"004",en:"What's the _____?",answer:"password",ja:"パスワードは何？"},
+      {id:"005",en:"What's the _____?",answer:"Wi-Fi password",ja:"Wi-Fiのパスワードは？"},
+      {id:"006",en:"What's the _____?",answer:"agenda today",ja:"今日の予定は何？"},
+      {id:"007",en:"What's the _____?",answer:"plan for tonight",ja:"今夜の計画は？"},
+      {id:"008",en:"What's the _____?",answer:"menu today",ja:"今日のメニューは？"},
+      {id:"009",en:"What's the _____?",answer:"topic",ja:"今日のトピックは？"},
+      {id:"010",en:"What's the _____?",answer:"issue",ja:"課題は何？"},
+      {id:"011",en:"What's the _____?",answer:"meaning of this",ja:"これの意味は何？"},
+      {id:"012",en:"What's the _____?",answer:"best route",ja:"ベストなルートは？"},
+      {id:"013",en:"What's the _____?",answer:"exchange rate",ja:"為替レートは？"},
+    ]},
+
+  { day:9, theme:"日時に関する疑問をつぶやく", phrase:"When is～?",
+    items:[
+      {id:"001",en:"When is _____?",answer:"the next bus",ja:"次のバスはいつ？"},
+      {id:"002",en:"When is _____?",answer:"the next train",ja:"次の電車はいつ？"},
+      {id:"003",en:"When is _____?",answer:"lunch time",ja:"昼休みはいつ？"},
+      {id:"004",en:"When is _____?",answer:"the meeting",ja:"会議はいつ？"},
+      {id:"005",en:"When is _____?",answer:"your birthday",ja:"あなたの誕生日はいつ？"},
+    ]},
+
+  { day:10, theme:"したいことをつぶやく", phrase:"I want to～",
+    items:[
+      {id:"001",en:"I want to _____.",answer:"drink water",ja:"水を飲みたい。"},
+      {id:"002",en:"I want to _____.",answer:"go to bed",ja:"寝たい。"},
+      {id:"003",en:"I want to _____.",answer:"eat something sweet",ja:"甘いものが食べたい。"},
+      {id:"004",en:"I want to _____.",answer:"take a nap",ja:"昼寝したい。"},
+    ]},
+
+  /* ▼▼ 12日目：これからすることをつぶやく */
+  { day:12, theme:"これからすることをつぶやく",
+    phrase:"I'll ～. / I'm thinking of ～ing. / I'm going to ～.",
+    items:[
+      {id:"001",en:"I'll _____.",answer:"prepare breakfast",ja:"朝食の準備をしよっと。"},
+      {id:"002",en:"I'll _____.",answer:"do the laundry",ja:"洗濯しよっと。"},
+      {id:"003",en:"I'll _____.",answer:"vacuum the floor",ja:"床に掃除機をかけよっと。"},
+      {id:"004",en:"I'll _____.",answer:"take out the garbage",ja:"ゴミを出そっと。"},
+      {id:"005",en:"I'll _____.",answer:"clean the toilet",ja:"トイレを掃除しよっと。"},
+      {id:"006",en:"I'll _____.",answer:"hang out the laundry",ja:"洗濯物干そっと。"},
+      {id:"007",en:"I'll _____.",answer:"bring the laundry in",ja:"洗濯物取り込もっ。"},
+      {id:"008",en:"I'll _____.",answer:"do the shopping",ja:"買い物しよっと。"},
+      {id:"009",en:"I'm thinking of _____.",answer:"traveling around the world",ja:"世界旅行をしようかな。"},
+      {id:"010",en:"I'm going to _____.",answer:"study English in London",ja:"ロンドンで英語を勉強するつもり。"},
+      {id:"011",en:"I'm going to _____.",answer:"stay home today",ja:"今日は家にいるつもり。"},
+    ]},
+
+  { day:11, theme:"周囲の状況・状態をつぶやく", phrase:"It looks/feels～",
+    items:[
+      {id:"001",en:"It looks _____.",answer:"cloudy outside",ja:"外は曇っているようだ。"},
+      {id:"002",en:"It looks _____.",answer:"busy today",ja:"今日は忙しそうだ。"},
+      {id:"003",en:"It feels _____.",answer:"cold today",ja:"今日は寒く感じる。"},
+    ]},
+
+  { day:13, theme:"所有・所属をたずねる", phrase:"Whose～?",
+    items:[
+      {id:"001",en:"Whose _____ is this?",answer:"bag",ja:"これは誰のカバンかな。"},
+      {id:"002",en:"Whose _____ are these?",answer:"shoes",ja:"これ誰の靴かな。"},
+      {id:"003",en:"Whose _____ are these?",answer:"glasses",ja:"これ誰の眼鏡かな。"},
+    ]},
+
+  { day:14, theme:"現在進行の自分ごとをつぶやく", phrase:"I’m ～ing",
+    items:[
+      {id:"001",en:"I'm _____.",answer:"studying now",ja:"今、勉強している。"},
+      {id:"002",en:"I'm _____.",answer:"cooking dinner",ja:"夕飯を作っている最中。"},
+      {id:"003",en:"I'm _____.",answer:"waiting for the bus",ja:"バスを待っている。"},
+    ]},
+
+  { day:15, theme:"過去の出来事をつぶやく", phrase:"I ～ed",
+    items:[
+      {id:"001",en:"I _____.",answer:"lost my keys",ja:"鍵をなくした。"},
+      {id:"002",en:"I _____.",answer:"missed the bus",ja:"バスに乗り遅れた。"},
+      {id:"003",en:"I _____.",answer:"broke my phone",ja:"携帯を壊した。"},
+    ]},
+
+  { day:16, theme:"計画・予定をつぶやく", phrase:"I’m going to～",
+    items:[
+      {id:"001",en:"I'm going to _____.",answer:"study English tonight",ja:"今夜は英語を勉強するつもり。"},
+      {id:"002",en:"I'm going to _____.",answer:"visit my friend",ja:"友達の家に行くつもり。"},
+      {id:"003",en:"I'm going to _____.",answer:"clean the room",ja:"部屋を掃除するつもり。"},
+    ]},
+
+  { day:17, theme:"許可・依頼をつぶやく", phrase:"Can I ～? / Could you ～?",
+    items:[
+      {id:"001",en:"Can I _____?",answer:"use your phone",ja:"あなたのスマホ使ってもいい？"},
+      {id:"002",en:"Could you _____?",answer:"help me",ja:"手伝ってもらえますか？"},
+      {id:"003",en:"Could you _____?",answer:"speak slowly",ja:"ゆっくり話してもらえますか？"},
+    ]},
+
+  { day:18, theme:"好みをつぶやく", phrase:"I like / I prefer ～",
+    items:[
+      {id:"001",en:"I like _____.",answer:"black tea",ja:"紅茶が好き。"},
+      {id:"002",en:"I prefer _____.",answer:"cats to dogs",ja:"犬より猫が好き。"},
+      {id:"003",en:"I like _____.",answer:"quiet cafés",ja:"静かなカフェが好き。"},
+    ]},
+
+  { day:19, theme:"必要・義務をつぶやく", phrase:"I need to～ / I have to～",
+    items:[
+      {id:"001",en:"I need to _____.",answer:"go shopping",ja:"買い物に行く必要がある。"},
+      {id:"002",en:"I have to _____.",answer:"finish this today",ja:"今日はこれを終わらせないと。"},
+      {id:"003",en:"I need to _____.",answer:"sleep earlier",ja:"もっと早く寝る必要がある。"},
+    ]},
+
+  { day:20, theme:"提案・勧誘をつぶやく", phrase:"Let’s ～ / Shall we ～?",
+    items:[
+      {id:"001",en:"Let's _____.",answer:"have a break",ja:"少し休もう。"},
+      {id:"002",en:"Shall we _____?",answer:"go for a walk",ja:"散歩に行きませんか？"},
+      {id:"003",en:"Let's _____.",answer:"make some tea",ja:"お茶を淹れよう。"},
+    ]},
+
+  { day:21, theme:"お願い・丁寧表現をつぶやく", phrase:"Would you ～? / Could I ～?",
+    items:[
+      {id:"001",en:"Would you _____?",answer:"open the window",ja:"窓を開けていただけますか？"},
+      {id:"002",en:"Could I _____?",answer:"sit here",ja:"ここに座ってもいいですか？"},
+      {id:"003",en:"Would you _____?",answer:"repeat that",ja:"もう一度言っていただけますか？"},
+    ]},
+
+  { day:22, theme:"推量・可能性をつぶやく", phrase:"It might / must ～",
+    items:[
+      {id:"001",en:"It might be _____.",answer:"rain later",ja:"あとで雨かもしれない。"},
+      {id:"002",en:"It must be _____.",answer:"hard",ja:"きっと大変だ。"},
+    ]},
+
+  { day:23, theme:"感謝・お礼をつぶやく", phrase:"Thank you for ～",
+    items:[
+      {id:"001",en:"Thank you for _____.",answer:"your help",ja:"手伝ってくれてありがとう。"},
+      {id:"002",en:"Thank you for _____.",answer:"waiting",ja:"待ってくれてありがとう。"},
+    ]},
+
+  { day:24, theme:"禁止・注意をつぶやく", phrase:"Don’t ～.",
+    items:[
+      {id:"001",en:"Don't _____.",answer:"break into the line",ja:"列に割り込むなよ。"},
+      {id:"002",en:"Don't _____.",answer:"dash into the train",ja:"駆け込み乗車をするなよ。"},
+      {id:"003",en:"Don't _____.",answer:"talk in a loud voice",ja:"大きな声でしゃべるなよ。"},
+      {id:"004",en:"Don't _____.",answer:"step on my shoe",ja:"靴を踏むなよ。"},
+      {id:"005",en:"Don't _____.",answer:"wear so much perfume",ja:"香水を付けすぎるなよ。"},
+    ]},
+
+  { day:25, theme:"助言・指示をつぶやく", phrase:"Please ～ / Make sure to ～",
+    items:[
+      {id:"001",en:"Please _____.",answer:"be careful",ja:"気をつけて。"},
+      {id:"002",en:"Make sure to _____.",answer:"lock the door",ja:"必ず鍵をかけて。"},
+    ]},
+
+  { day:26, theme:"許可を与える・勧める", phrase:"You can ～ / You should ～",
+    items:[
+      {id:"001",en:"You can _____.",answer:"sit there",ja:"そこに座っていいよ。"},
+      {id:"002",en:"You should _____.",answer:"take an umbrella",ja:"傘を持って行ったほうがいいよ。"},
+    ]},
+
+  { day:27, theme:"希望・願望をつぶやく", phrase:"I hope / I wish ～",
+    items:[
+      {id:"001",en:"I hope _____.",answer:"it goes well",ja:"うまくいきますように。"},
+      {id:"002",en:"I wish _____.",answer:"I had more time",ja:"もっと時間があればなぁ。"},
+    ]},
+
+  { day:28, theme:"比較してつぶやく", phrase:"… than ～ / as … as ～",
+    items:[
+      {id:"001",en:"This is _____ than that.",answer:"better",ja:"これはあれより良い。"},
+      {id:"002",en:"I'm not as _____ as before.",answer:"tired",ja:"前ほど疲れていない。"},
+    ]},
+
+  { day:29, theme:"習慣・頻度をつぶやく", phrase:"I usually / I often ～",
+    items:[
+      {id:"001",en:"I usually _____.",answer:"study in the morning",ja:"たいてい朝に勉強する。"},
+      {id:"002",en:"I often _____.",answer:"have tea in the afternoon",ja:"午後に紅茶をよく飲む。"},
+    ]},
 ];
 
 /* ========= ② 状態管理 ========= */
@@ -102,8 +408,25 @@ function saveStore(day,data){ localStorage.setItem(storeKey(day), JSON.stringify
 
 /* ========= ③ ユーティリティ ========= */
 function getDayData(day){ return DATASET.find(x=>x.day===day); }
+function buildChoices(item, pool){
+  if(item.options && item.options.length>=4) return shuffle(item.options.slice(0,4));
+  const allWords = [...new Set(pool.map(i=>i.answer))];
+  const wrongs = shuffle(allWords.filter(w=>w!==item.answer)).slice(0,3);
+  return shuffle([item.answer, ...wrongs]);
+}
 function shuffle(arr){ return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(p=>p[1]); }
 function fillBlank(en, chunk){ return en.replace("_____", chunk); }
+function britishVoice(){
+  const voices = speechSynthesis.getVoices();
+  return voices.find(v=>/en-GB/i.test(v.lang)) || voices.find(v=>/English/i.test(v.name)) || voices[0];
+}
+function speak(text){
+  if(!("speechSynthesis" in window)) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.voice = britishVoice();
+  u.rate = 0.85;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
 
 /* ========= ④ UI初期化 ========= */
 const daySelect = document.getElementById("daySelect");
@@ -112,6 +435,7 @@ const qEn = document.getElementById("qEn");
 const choicesEl = document.getElementById("choices");
 const feedbackEl = document.getElementById("feedback");
 const nextBtn = document.getElementById("nextBtn");
+const speakBtn = document.getElementById("speakBtn");
 const titlePill = document.getElementById("titlePill");
 const countPill = document.getElementById("countPill");
 const scorePill = document.getElementById("scorePill");
@@ -149,7 +473,7 @@ function renderQuestion(){
   const id = state.queue[state.idx]; const item = d.items.find(x=>x.id===id);
   qJa.textContent = item.ja;
   qEn.innerHTML = item.en.replace("_____", '<span class="blank">_____</span>');
-  const opts = shuffle([item.answer, ...d.items.filter(i=>i.answer!==item.answer).map(i=>i.answer).slice(0,3)]);
+  const opts = buildChoices(item, d.items);
   choicesEl.innerHTML = "";
   opts.forEach(opt=>{
     const btn = document.createElement("button"); btn.className = "choice"; btn.textContent = opt;
@@ -169,6 +493,7 @@ function checkAnswer(opt,item){
     feedbackEl.textContent = "正解です！よくできました。"; feedbackEl.classList.add("ok");
     if(!st.correct.includes(item.id)) st.correct.push(item.id);
     st.wrong = st.wrong.filter(id=>id!==item.id);
+    speak(fillBlank(item.en, item.answer));
   }else{
     feedbackEl.textContent = `不正解。正解は「${item.answer}」。`; feedbackEl.classList.add("ng");
     if(!st.wrong.includes(item.id)) st.wrong.push(item.id);
@@ -178,7 +503,7 @@ function checkAnswer(opt,item){
 }
 function next(){
   if(state.idx < state.queue.length-1){ state.idx++; renderQuestion(); }
-  else{ feedbackEl.textContent = "本日の出題はここまで。お疲れさま！"; feedbackEl.className = "feedback ok"; qEn.innerHTML = "Complete ✅"; choicesEl.innerHTML = ""; }
+  else{ feedbackEl.textContent = "本日の出題はここまで。お疲れさま！復習モードで誤答だけやり直せます。"; feedbackEl.className = "feedback ok"; qEn.innerHTML = "Complete ✅"; choicesEl.innerHTML = ""; }
 }
 function resetDay(){
   if(confirm("この日の成績（正解/誤答）をリセットしますか？")){
@@ -193,9 +518,14 @@ daySelect.addEventListener("change", e=>{
   makeQueue(); renderQuestion();
 });
 nextBtn.addEventListener("click", next);
+speakBtn.addEventListener("click", ()=> {
+  const d = getDayData(state.day); const id = state.queue[state.idx]; const item = d.items.find(x=>x.id===id);
+  if(item) speak(fillBlank(item.en, item.answer));
+});
 modeAllBtn.addEventListener("click", ()=>{ state.mode="all"; modeAllBtn.classList.add("primary"); modeWrongBtn.classList.remove("primary"); makeQueue(); renderQuestion(); });
 modeWrongBtn.addEventListener("click", ()=>{ state.mode="wrong"; modeWrongBtn.classList.add("primary"); modeAllBtn.classList.remove("primary"); makeQueue(); renderQuestion(); });
 resetBtn.addEventListener("click", resetDay);
+window.speechSynthesis?.addEventListener("voiceschanged",()=>{});
 
 /* ========= ⑥ 起動 ========= */
 (function init(){ populateDaySelect(); state.day = DATASET[0].day; daySelect.value = String(state.day); modeAllBtn.classList.add("primary"); makeQueue(); renderQuestion(); })();
